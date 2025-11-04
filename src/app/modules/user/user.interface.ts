@@ -1,10 +1,8 @@
 import { Types } from "mongoose";
 
 export enum Role {
-    SUPER_ADMIN = "SUPER_ADMIN",
     ADMIN = "ADMIN",
-    USER = "USER",
-    SEO_EXPERT = "SEO_EXPERT"
+    EDITOR = "EDITOR"
 }
 
 export enum IsActive {

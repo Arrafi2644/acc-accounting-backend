@@ -8,7 +8,7 @@ const userSchema = new Schema<IUser>({
     role: {
         type: String,
         enum: Object.values(Role),
-        default: Role.USER
+        default: Role.EDITOR
     },
     phone: {type: String},
     picture: {type: String},
