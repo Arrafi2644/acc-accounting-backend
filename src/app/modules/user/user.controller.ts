@@ -6,15 +6,16 @@ import { catchAsync } from "../../utils/catchAsync";
 import httpStatus from "http-status-codes";
 import { sendResponse } from "../../utils/sendResponse";
 import { JwtPayload } from "jsonwebtoken";
+import { IUser } from "./user.interface";
 
-const createUser = catchAsync(async (req: Request, res: Response, next: NextFunction)=> {
+const createUser = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const user = await UserServices.createUserService(req.body)
 
-      sendResponse(res, {
-      statusCode: httpStatus.CREATED,
-      success: true,
-      message: "User Created Successfully",
-      data: user
+    sendResponse(res, {
+        statusCode: httpStatus.CREATED,
+        success: true,
+        message: "User Created Successfully",
+        data: user
 
     })
 })
@@ -56,7 +57,10 @@ const getSingleUser = catchAsync(async (req: Request, res: Response, next: NextF
 
 const updateUser = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.params.id;
-    const payload = req.body;
+    const payload: IUser = {
+        ...req.body,
+        picture: req.file?.path
+    }
 
     const verifiedToken = req.user;
 
@@ -66,7 +70,6 @@ const updateUser = catchAsync(async (req: Request, res: Response, next: NextFunc
         success: true,
         message: "User Updated Successfully",
         data: user
-
     })
 })
 

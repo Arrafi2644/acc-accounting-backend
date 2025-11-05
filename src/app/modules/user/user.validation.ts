@@ -63,6 +63,9 @@ export const updateUserZodSchema = z.object({
     password: z
         .string({ invalid_type_error: "Password must be string" })
         .min(8, { message: "Password must be at least 8 characters long." })
-        .optional()
+        .optional(),
+    picture: z
+        .string({ invalid_type_error: "Picture must be string" })
+        .optional(),
 })
 
