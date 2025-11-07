@@ -95,6 +95,22 @@ const updateService = catchAsync(async (req: Request, res: Response) => {
         data: result
     });
 });
+
+const getAllServices = catchAsync(async (req: Request, res: Response) => {
+
+    const query = req.query
+
+    const result = await ServiceServices.getAllServices(query as Record<string, string>);
+    
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: 'Services retrieved successfully',
+        data: result.data,
+        meta: result.meta,
+    });
+});
+
 export const ServiceControllers = {
     createServiceType,
     getAllServiceTypes,
@@ -102,5 +118,6 @@ export const ServiceControllers = {
     deleteServiceType,
     createService,
     getSingleService,
-    updateService
+    updateService,
+    getAllServices
 }

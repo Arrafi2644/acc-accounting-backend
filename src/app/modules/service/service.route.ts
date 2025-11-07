@@ -24,6 +24,7 @@ router.patch( "/update-service/:id",
     validateRequest(updateServiceZodSchema),
     ServiceControllers.updateService
 );
+router.get("/", ServiceControllers.getAllServices)
 router.get("/:id", ServiceControllers.getSingleService)
 
 export const serviceRoutes = router;

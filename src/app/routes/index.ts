@@ -3,6 +3,9 @@ import { userRoutes } from "../modules/user/user.route";
 import { authRoutes } from "../modules/auth/auth.route";
 import { serviceRoutes } from "../modules/service/service.route";
 import { joinUsFormRoutes } from "../modules/joinUsForm/joinUsForm.route";
+import { referralFormRoutes } from "../modules/referralForm/referralForm.route";
+import { messageFormRoutes } from "../modules/message/message.route";
+import { siteInfoRoutes } from "../modules/siteInfo/siteInfo.route";
 
 export const router = Router();
 
@@ -22,6 +25,18 @@ const moduleRoutes = [
     {
         path: "/join-us-form",
         route: joinUsFormRoutes
+    },
+     {
+        path: "/referral-form",
+        route: referralFormRoutes
+    },
+    {
+        path: "/message",
+        route: messageFormRoutes
+    },
+    {
+         path: "/site-info",
+        route: siteInfoRoutes
     }
 ]
 

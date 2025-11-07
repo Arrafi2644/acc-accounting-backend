@@ -3,6 +3,8 @@ import AppError from "../../errorHelpers/appError";
 import { IService, IServiceType } from "./service.interface";
 import { Service, ServiceType } from "./service.model";
 import { deleteImageFromCloudinary } from '../../config/cloudinary.config';
+import { QueryBuilder } from '../../utils/queryBuilder';
+import { ServicesSearchableFields } from './service.constants';
 
 
 // Service Type 
@@ -54,7 +56,7 @@ const createService = async (payload: IService) => {
 
 const getSingleService = async (serviceId: string) => {
     
-    const service = await Service.findById(serviceId)
+    const service = await Service.findById(serviceId).populate("serviceType", "name")
 
     if(!service){
         throw new AppError(httpStatus.NOT_FOUND, "Service not found")
@@ -94,6 +96,28 @@ const updateService = async (id: string, payload: Partial<IService>) => {
 
     return updatedService;
 }; 
+
+const getAllServices = async (query: Record<string, string>) => {
+
+    const queryBuilder = new QueryBuilder(Service.find(), query)
+
+    const services = await queryBuilder
+        .search(ServicesSearchableFields)
+        .filter()
+        .sort()
+        .fields()
+        .paginate()
+
+    const [data, meta] = await Promise.all([
+        services.build(),
+        queryBuilder.getMeta()
+    ])
+
+    return {
+        data,
+        meta
+    }
+};
 export const ServiceServices = {
     createServiceType,
     getAllServiceTypes,
@@ -101,5 +125,6 @@ export const ServiceServices = {
     deleteServiceType,
     createService,
     getSingleService,
-    updateService
+    updateService,
+    getAllServices
 }

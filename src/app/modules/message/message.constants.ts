@@ -1,0 +1,1 @@
+export const MessageFormSearchableFields = ["fullName", "email"]
