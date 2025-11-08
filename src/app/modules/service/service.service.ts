@@ -5,6 +5,7 @@ import { Service, ServiceType } from "./service.model";
 import { deleteImageFromCloudinary } from '../../config/cloudinary.config';
 import { QueryBuilder } from '../../utils/queryBuilder';
 import { ServicesSearchableFields } from './service.constants';
+import mongoose from 'mongoose';
 
 
 // Service Type 
@@ -33,14 +34,31 @@ const updateServiceType = async (id: string, payload: IServiceType) => {
     return updatedServiceType;
 };
 
-const deleteServiceType = async (id: string) => {
-    const existingServiceType = await ServiceType.findById(id);
-    if (!existingServiceType) {
-        throw new Error("Service type not found.");
-    }
+const  deleteServiceType = async (id: string) => {
+    const session = await mongoose.startSession();
+    session.startTransaction();
 
-    return await ServiceType.findByIdAndDelete(id);
+    try {
+        const existingServiceType = await ServiceType.findById(id).session(session);
+        if (!existingServiceType) {
+            throw new AppError(httpStatus.NOT_FOUND, "Service type not found.");
+        }
+
+        await Service.deleteMany({ serviceType: id }).session(session);
+        await ServiceType.findByIdAndDelete(id).session(session);
+
+        await session.commitTransaction();
+        session.endSession();
+
+        return { message: "Service type and related services deleted successfully" };
+    } catch (error) {
+        await session.abortTransaction();
+        session.endSession();
+        throw error;
+    }
 };
+
+
 
 // Service 
 const createService = async (payload: IService) => {

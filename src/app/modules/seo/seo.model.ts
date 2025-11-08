@@ -1,0 +1,20 @@
+import { Schema, model } from "mongoose";
+import { ISEO } from "./seo.interface";
+
+const SEOSchema = new Schema<ISEO>(
+  {
+    pagePath: { type: String, required: true, unique: true },
+    pageTitle: { type: String, required: true },
+    pageDescription: { type: String, required: true },
+    metaTitle: { type: String, required: true },
+    metaDescription: { type: String, required: true },
+    metaKeywords: { type: String },
+    canonicalURL: { type: String, required: true },
+    ogTitle: { type: String },
+    ogDescription: { type: String },
+    ogImage: { type: String },
+  },
+  { timestamps: true }
+);
+
+export const SEO = model<ISEO>("SEO", SEOSchema);

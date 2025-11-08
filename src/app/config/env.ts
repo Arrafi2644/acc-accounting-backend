@@ -25,7 +25,8 @@ interface EnvConfig {
         SMTP_HOST: string,
         SMTP_FROM: string
     },
-   COMPANY_EMAIL: string
+    COMPANY_EMAIL: string,
+    FRONTEND_URL: string
 
 }
 
@@ -40,7 +41,8 @@ const loadEnvVariables = (): EnvConfig => {
         "SMTP_USER",
         "SMTP_PASS",
         "SMTP_FROM",
-        "COMPANY_EMAIL"
+        "COMPANY_EMAIL",
+        "FRONTEND_URL"
     ]
 
     requiredEnvVariables.forEach(key => {
@@ -72,7 +74,8 @@ const loadEnvVariables = (): EnvConfig => {
             SMTP_HOST: process.env.SMTP_HOST as string,
             SMTP_FROM: process.env.SMTP_FROM as string
         },
-        COMPANY_EMAIL: process.env.COMPANY_EMAIL as string
+        COMPANY_EMAIL: process.env.COMPANY_EMAIL as string,
+        FRONTEND_URL:process.env.FRONTEND_URL as string
 
     }
 }

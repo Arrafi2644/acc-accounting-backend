@@ -6,6 +6,8 @@ import { joinUsFormRoutes } from "../modules/joinUsForm/joinUsForm.route";
 import { referralFormRoutes } from "../modules/referralForm/referralForm.route";
 import { messageFormRoutes } from "../modules/message/message.route";
 import { siteInfoRoutes } from "../modules/siteInfo/siteInfo.route";
+import { testimonialRoutes } from "../modules/testimonial/testimonial.route";
+import { seoRoutes } from "../modules/seo/seo.route";
 
 export const router = Router();
 
@@ -37,7 +39,16 @@ const moduleRoutes = [
     {
          path: "/site-info",
         route: siteInfoRoutes
+    },
+    {
+        path: "/testimonial",
+        route: testimonialRoutes
+    },
+     {
+        path: "/seo",
+        route: seoRoutes
     }
+
 ]
 
 moduleRoutes.forEach(route => {
