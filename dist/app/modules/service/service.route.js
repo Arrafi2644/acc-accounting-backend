@@ -1,0 +1,23 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.serviceRoutes = void 0;
+const express_1 = __importDefault(require("express"));
+const validateRequest_1 = require("../../middlewares/validateRequest");
+const service_validation_1 = require("./service.validation");
+const checkAuth_1 = require("../../middlewares/checkAuth");
+const user_interface_1 = require("../user/user.interface");
+const service_controller_1 = require("./service.controller");
+const multer_config_1 = require("../../config/multer.config");
+const router = express_1.default.Router();
+router.post('/create-service-type', (0, validateRequest_1.validateRequest)(service_validation_1.createServiceTypeZodSchema), (0, checkAuth_1.checkAuth)(user_interface_1.Role.ADMIN), service_controller_1.ServiceControllers.createServiceType);
+router.get('/service-types', service_controller_1.ServiceControllers.getAllServiceTypes);
+router.patch("/service-types/:id", (0, checkAuth_1.checkAuth)(user_interface_1.Role.ADMIN), (0, validateRequest_1.validateRequest)(service_validation_1.createServiceTypeZodSchema), service_controller_1.ServiceControllers.updateServiceType);
+router.delete("/service-types/:id", (0, checkAuth_1.checkAuth)(user_interface_1.Role.ADMIN), service_controller_1.ServiceControllers.deleteServiceType);
+router.post("/create-service", (0, checkAuth_1.checkAuth)(...Object.values(user_interface_1.Role)), multer_config_1.multerUpload.array("files"), (0, validateRequest_1.validateRequest)(service_validation_1.createServiceZodSchema), service_controller_1.ServiceControllers.createService);
+router.patch("/update-service/:id", (0, checkAuth_1.checkAuth)(...Object.values(user_interface_1.Role)), multer_config_1.multerUpload.array("files"), (0, validateRequest_1.validateRequest)(service_validation_1.updateServiceZodSchema), service_controller_1.ServiceControllers.updateService);
+router.get("/", service_controller_1.ServiceControllers.getAllServices);
+router.get("/:id", service_controller_1.ServiceControllers.getSingleService);
+exports.serviceRoutes = router;
