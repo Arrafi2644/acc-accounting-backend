@@ -12,7 +12,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Service = exports.ServiceType = void 0;
 const mongoose_1 = require("mongoose");
 const serviceTypeSchema = new mongoose_1.Schema({
-    name: { type: String, required: true, unique: true }
+    name: { type: String, required: true, unique: true },
+    description: { type: String }
 }, {
     timestamps: true
 });

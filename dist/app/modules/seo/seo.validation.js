@@ -24,7 +24,11 @@ exports.createSEOZodSchema = zod_1.z.object({
     }).url("Canonical URL must be a valid URL"),
     ogTitle: zod_1.z.string().optional(),
     ogDescription: zod_1.z.string().optional(),
-    ogImage: zod_1.z.string().url("OG Image must be a valid URL").optional(),
+    // ogImage: z.string().url("OG Image must be a valid URL").optional(),
+    ogImage: zod_1.z
+        .string()
+        .optional()
+        .refine((val) => !val || /^https?:\/\/\S+$/.test(val), { message: "OG Image must be a valid URL" }),
 });
 exports.updateSEOZodSchema = zod_1.z.object({
     pageTitle: zod_1.z.string()
@@ -45,7 +49,8 @@ exports.updateSEOZodSchema = zod_1.z.object({
         .optional(),
     ogTitle: zod_1.z.string().optional(),
     ogDescription: zod_1.z.string().optional(),
-    ogImage: zod_1.z.string()
-        .url("OG Image must be a valid URL")
-        .optional(),
+    ogImage: zod_1.z
+        .string()
+        .optional()
+        .refine((val) => !val || /^https?:\/\/\S+$/.test(val), { message: "OG Image must be a valid URL" }).optional(),
 });

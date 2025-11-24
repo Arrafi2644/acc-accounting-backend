@@ -37,13 +37,15 @@ const getMe = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0,
         data: result.data
     });
 }));
-const getAllUser = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield user_service_1.UserServices.getAllUser();
+const getAllUser = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const query = req.query;
+    const result = yield user_service_1.UserServices.getAllUser(query);
     (0, sendResponse_1.sendResponse)(res, {
         success: true,
         statusCode: http_status_codes_1.default.OK,
         message: "All Users Retrieved Successfully",
-        data: result.data
+        data: result.data,
+        meta: result.meta,
     });
 }));
 const getSingleUser = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
@@ -69,10 +71,21 @@ const updateUser = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(vo
         data: user
     });
 }));
+const deleteUser = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const userId = req.params.id;
+    const result = yield user_service_1.UserServices.deleteUser(userId);
+    (0, sendResponse_1.sendResponse)(res, {
+        success: true,
+        statusCode: http_status_codes_1.default.OK,
+        message: "User Deleted Successfully",
+        data: result.data
+    });
+}));
 exports.UserControllers = {
     createUser,
     getMe,
     getAllUser,
     getSingleUser,
-    updateUser
+    updateUser,
+    deleteUser
 };

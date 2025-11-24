@@ -30,6 +30,8 @@ const user_model_1 = require("./user.model");
 const appError_1 = __importDefault(require("../../errorHelpers/appError"));
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const env_1 = require("../../config/env");
+const queryBuilder_1 = require("../../utils/queryBuilder");
+const user_constants_1 = require("./user.constants");
 const createUserService = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password } = payload, rest = __rest(payload, ["email", "password"]);
     const isExistUser = yield user_model_1.User.findOne({ email });
@@ -46,10 +48,21 @@ const getMe = (userId) => __awaiter(void 0, void 0, void 0, function* () {
         data: user
     };
 });
-const getAllUser = () => __awaiter(void 0, void 0, void 0, function* () {
-    const user = yield user_model_1.User.find();
+const getAllUser = (query) => __awaiter(void 0, void 0, void 0, function* () {
+    const queryBuilder = new queryBuilder_1.QueryBuilder(user_model_1.User.find(), query);
+    const users = yield queryBuilder
+        .search(user_constants_1.UsersSearchableFields)
+        .filter()
+        .sort()
+        .fields()
+        .paginate();
+    const [data, meta] = yield Promise.all([
+        users.build(),
+        queryBuilder.getMeta()
+    ]);
     return {
-        data: user
+        data,
+        meta
     };
 });
 const getSingleUser = (id) => __awaiter(void 0, void 0, void 0, function* () {
@@ -59,6 +72,16 @@ const getSingleUser = (id) => __awaiter(void 0, void 0, void 0, function* () {
     }
     return {
         data: user
+    };
+});
+const deleteUser = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield user_model_1.User.findById(id);
+    if (!user) {
+        throw new appError_1.default(http_status_codes_1.default.NOT_FOUND, "User Not Found");
+    }
+    yield user_model_1.User.findByIdAndDelete(id);
+    return {
+        data: null
     };
 });
 // const updateUser = async (userId: string, payload: Partial<IUser>, decodedToken: JwtPayload) => {
@@ -117,6 +140,7 @@ exports.UserServices = {
     createUserService,
     getMe,
     getAllUser,
+    deleteUser,
     getSingleUser,
     updateUser
 };

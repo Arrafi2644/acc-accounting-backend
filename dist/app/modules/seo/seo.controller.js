@@ -18,9 +18,9 @@ const catchAsync_1 = require("../../utils/catchAsync");
 const sendResponse_1 = require("../../utils/sendResponse");
 const seo_service_1 = require("./seo.service");
 // Get SEO info for a page
-const getSEO = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getSinglePageSEO = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { pagePath } = req.params;
-    const result = yield seo_service_1.SEOServices.getSEO(pagePath);
+    const result = yield seo_service_1.SEOServices.getSinglePageSEO(pagePath);
     (0, sendResponse_1.sendResponse)(res, {
         statusCode: http_status_codes_1.default.OK,
         success: true,
@@ -51,9 +51,9 @@ const createSEO = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, v
 //     });
 // });
 const updateSEO = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { pagePath } = req.params;
-    const payload = req.body; // Only fields to update
-    const result = yield seo_service_1.SEOServices.updateSEO(pagePath, payload);
+    const { id } = req.params;
+    const payload = req.body;
+    const result = yield seo_service_1.SEOServices.updateSEO(id, payload);
     (0, sendResponse_1.sendResponse)(res, {
         statusCode: http_status_codes_1.default.OK,
         success: true,
@@ -71,9 +71,21 @@ const deleteSEO = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, v
         data: result,
     });
 }));
+const getAllSeo = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const query = req.query;
+    const result = yield seo_service_1.SEOServices.getAllSeo(query);
+    (0, sendResponse_1.sendResponse)(res, {
+        statusCode: http_status_codes_1.default.OK,
+        success: true,
+        message: "SEO data retrieved successfully",
+        data: result.data,
+        meta: result.meta,
+    });
+}));
 exports.SEOControllers = {
-    getSEO,
+    getSinglePageSEO,
     createSEO,
     updateSEO,
-    deleteSEO
+    deleteSEO,
+    getAllSeo
 };

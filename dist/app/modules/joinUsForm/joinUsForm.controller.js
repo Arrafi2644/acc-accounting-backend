@@ -22,20 +22,46 @@ const submitJoinUsForm = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(vo
     (0, sendResponse_1.sendResponse)(res, {
         statusCode: http_status_codes_1.default.CREATED,
         success: true,
-        message: 'Form submitted successfully',
+        message: 'Form retrieved successfully',
+        data: result,
+    });
+}));
+const getSingleJoinUsForm = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const id = req.params.id;
+    // Call service to get single form
+    const result = yield joinUsForm_service_1.JoinUsFormServices.getSingleJoinUsForm(id);
+    // Send response
+    (0, sendResponse_1.sendResponse)(res, {
+        statusCode: http_status_codes_1.default.OK,
+        success: true,
+        message: "Form fetched successfully",
         data: result,
     });
 }));
 const getAllSubmittedFormData = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield joinUsForm_service_1.JoinUsFormServices.getAllSubmittedFormData();
+    const query = req.query;
+    const result = yield joinUsForm_service_1.JoinUsFormServices.getAllSubmittedFormData(query);
     (0, sendResponse_1.sendResponse)(res, {
-        success: true,
         statusCode: http_status_codes_1.default.OK,
-        message: "All Form Data Retrieved Successfully",
-        data: result.data
+        success: true,
+        message: 'All forms data retrieved successfully',
+        data: result.data,
+        meta: result.meta,
+    });
+}));
+const deleteJoinUsForm = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const id = req.params.id;
+    const result = yield joinUsForm_service_1.JoinUsFormServices.deleteJoinUsForm(id);
+    (0, sendResponse_1.sendResponse)(res, {
+        statusCode: http_status_codes_1.default.OK,
+        success: true,
+        message: "Form deleted successfully",
+        data: result,
     });
 }));
 exports.JoinUsFormControllers = {
     submitJoinUsForm,
-    getAllSubmittedFormData
+    getAllSubmittedFormData,
+    getSingleJoinUsForm,
+    deleteJoinUsForm
 };

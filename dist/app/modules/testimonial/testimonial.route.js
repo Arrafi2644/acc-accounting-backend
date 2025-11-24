@@ -14,5 +14,5 @@ const router = express_1.default.Router();
 router.get("/", testimonial_controller_1.TestimonialControllers.getAllTestimonials);
 router.post("/", (0, validateRequest_1.validateRequest)(testimonial_validation_1.createTestimonialZodSchema), testimonial_controller_1.TestimonialControllers.createTestimonial);
 router.patch("/:id", (0, checkAuth_1.checkAuth)(...Object.values(user_interface_1.Role)), (0, validateRequest_1.validateRequest)(testimonial_validation_1.updateTestimonialZodSchema), testimonial_controller_1.TestimonialControllers.updateTestimonial);
-router.delete("/:id", (0, checkAuth_1.checkAuth)(user_interface_1.Role.ADMIN), testimonial_controller_1.TestimonialControllers.deleteTestimonial);
+router.delete("/:id", (0, checkAuth_1.checkAuth)(...Object.values(user_interface_1.Role)), testimonial_controller_1.TestimonialControllers.deleteTestimonial);
 exports.testimonialRoutes = router;

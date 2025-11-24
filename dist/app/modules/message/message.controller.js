@@ -37,7 +37,29 @@ const getAllMessageForm = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(v
         meta: result.meta,
     });
 }));
+const getSingleMessage = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const id = req.params.id;
+    const result = yield message_service_1.MessageFormServices.getSingleMessage(id);
+    (0, sendResponse_1.sendResponse)(res, {
+        statusCode: http_status_codes_1.default.OK,
+        success: true,
+        message: "Message retrieved successfully",
+        data: result,
+    });
+}));
+const deleteMessage = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const id = req.params.id;
+    const result = yield message_service_1.MessageFormServices.deleteMessage(id);
+    (0, sendResponse_1.sendResponse)(res, {
+        statusCode: http_status_codes_1.default.OK,
+        success: true,
+        message: "Message deleted successfully",
+        data: result,
+    });
+}));
 exports.MessageFormControllers = {
     submitMessageForm,
-    getAllMessageForm
+    getAllMessageForm,
+    deleteMessage,
+    getSingleMessage
 };

@@ -29,12 +29,14 @@ const createServiceType = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(v
     });
 }));
 const getAllServiceTypes = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield service_service_1.ServiceServices.getAllServiceTypes();
+    const query = req.query;
+    const result = yield service_service_1.ServiceServices.getAllServiceTypes(query);
     (0, sendResponse_1.sendResponse)(res, {
         statusCode: http_status_codes_1.default.OK,
         success: true,
-        message: 'All service types retrieved successfully',
-        data: result,
+        message: "Service types retrieved successfully",
+        data: result.data,
+        meta: result.meta,
     });
 }));
 const updateServiceType = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -100,6 +102,16 @@ const getAllServices = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void
         meta: result.meta,
     });
 }));
+const deleteService = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const serviceId = req.params.id;
+    const result = yield service_service_1.ServiceServices.deleteService(serviceId);
+    (0, sendResponse_1.sendResponse)(res, {
+        statusCode: http_status_codes_1.default.OK,
+        success: true,
+        message: 'Service Deleted successfully',
+        data: result
+    });
+}));
 exports.ServiceControllers = {
     createServiceType,
     getAllServiceTypes,
@@ -108,5 +120,6 @@ exports.ServiceControllers = {
     createService,
     getSingleService,
     updateService,
-    getAllServices
+    getAllServices,
+    deleteService
 };

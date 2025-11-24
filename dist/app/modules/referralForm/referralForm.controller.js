@@ -37,7 +37,29 @@ const getAllReferralForm = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(
         meta: result.meta,
     });
 }));
+const getSingleReferralForm = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const id = req.params.id;
+    const result = yield referalForm_service_1.ReferralFormServices.getSingleReferralForm(id);
+    (0, sendResponse_1.sendResponse)(res, {
+        statusCode: http_status_codes_1.default.OK,
+        success: true,
+        message: "Referral retrieved successfully",
+        data: result,
+    });
+}));
+const deleteReferralForm = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const id = req.params.id;
+    const result = yield referalForm_service_1.ReferralFormServices.deleteReferralForm(id);
+    (0, sendResponse_1.sendResponse)(res, {
+        statusCode: http_status_codes_1.default.OK,
+        success: true,
+        message: "Referral deleted successfully",
+        data: result,
+    });
+}));
 exports.ReferralFormControllers = {
     submitReferralForm,
-    getAllReferralForm
+    getAllReferralForm,
+    deleteReferralForm,
+    getSingleReferralForm
 };

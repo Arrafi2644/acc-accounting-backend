@@ -12,5 +12,7 @@ const message_validation_1 = require("./message.validation");
 const message_controller_1 = require("./message.controller");
 const router = express_1.default.Router();
 router.post('/', (0, validateRequest_1.validateRequest)(message_validation_1.MessageFormZodSchema), message_controller_1.MessageFormControllers.submitMessageForm);
-router.get('/', (0, checkAuth_1.checkAuth)(...Object.values(user_interface_1.Role)), message_controller_1.MessageFormControllers.getAllMessageForm);
+router.get('/:id', (0, checkAuth_1.checkAuth)(user_interface_1.Role.ADMIN), message_controller_1.MessageFormControllers.getSingleMessage);
+router.delete('/:id', (0, checkAuth_1.checkAuth)(user_interface_1.Role.ADMIN), message_controller_1.MessageFormControllers.deleteMessage);
+router.get('/', (0, checkAuth_1.checkAuth)(user_interface_1.Role.ADMIN), message_controller_1.MessageFormControllers.getAllMessageForm);
 exports.messageFormRoutes = router;

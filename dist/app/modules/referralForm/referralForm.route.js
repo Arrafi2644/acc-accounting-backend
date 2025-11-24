@@ -12,5 +12,7 @@ const checkAuth_1 = require("../../middlewares/checkAuth");
 const user_interface_1 = require("../user/user.interface");
 const router = express_1.default.Router();
 router.post('/', (0, validateRequest_1.validateRequest)(referralForm_validation_1.ReferralFormZodSchema), referralForm_controller_1.ReferralFormControllers.submitReferralForm);
-router.get('/', (0, checkAuth_1.checkAuth)(...Object.values(user_interface_1.Role)), referralForm_controller_1.ReferralFormControllers.getAllReferralForm);
+router.get('/:id', (0, checkAuth_1.checkAuth)(user_interface_1.Role.ADMIN), referralForm_controller_1.ReferralFormControllers.getSingleReferralForm);
+router.delete('/:id', (0, checkAuth_1.checkAuth)(user_interface_1.Role.ADMIN), referralForm_controller_1.ReferralFormControllers.deleteReferralForm);
+router.get('/', (0, checkAuth_1.checkAuth)(user_interface_1.Role.ADMIN), referralForm_controller_1.ReferralFormControllers.getAllReferralForm);
 exports.referralFormRoutes = router;

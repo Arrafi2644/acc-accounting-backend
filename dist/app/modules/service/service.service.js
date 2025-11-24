@@ -28,8 +28,22 @@ const createServiceType = (payload) => __awaiter(void 0, void 0, void 0, functio
     }
     return yield service_model_1.ServiceType.create(payload);
 });
-const getAllServiceTypes = () => __awaiter(void 0, void 0, void 0, function* () {
-    return yield service_model_1.ServiceType.find();
+const getAllServiceTypes = (query) => __awaiter(void 0, void 0, void 0, function* () {
+    const queryBuilder = new queryBuilder_1.QueryBuilder(service_model_1.ServiceType.find(), query);
+    const serviceTypesQuery = queryBuilder
+        .search(["name", "description"])
+        .filter()
+        .sort()
+        .fields()
+        .paginate();
+    const [data, meta] = yield Promise.all([
+        serviceTypesQuery.build(),
+        queryBuilder.getMeta()
+    ]);
+    return {
+        data,
+        meta
+    };
 });
 const updateServiceType = (id, payload) => __awaiter(void 0, void 0, void 0, function* () {
     const existingServiceType = yield service_model_1.ServiceType.findById(id);
@@ -106,13 +120,21 @@ const getAllServices = (query) => __awaiter(void 0, void 0, void 0, function* ()
         .fields()
         .paginate();
     const [data, meta] = yield Promise.all([
-        services.build(),
+        services.build().populate("serviceType", "name"),
         queryBuilder.getMeta()
     ]);
     return {
         data,
         meta
     };
+});
+const deleteService = (serviceId) => __awaiter(void 0, void 0, void 0, function* () {
+    const service = yield service_model_1.Service.findById(serviceId);
+    if (!service) {
+        throw new appError_1.default(http_status_codes_1.default.NOT_FOUND, "Service not found");
+    }
+    yield service.deleteOne();
+    return null;
 });
 exports.ServiceServices = {
     createServiceType,
@@ -122,5 +144,6 @@ exports.ServiceServices = {
     createService,
     getSingleService,
     updateService,
-    getAllServices
+    getAllServices,
+    deleteService
 };

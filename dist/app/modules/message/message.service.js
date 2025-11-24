@@ -8,9 +8,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.MessageFormServices = void 0;
+exports.MessageFormServices = exports.deleteMessage = exports.getSingleMessage = void 0;
+const http_status_codes_1 = __importDefault(require("http-status-codes"));
 const env_1 = require("../../config/env");
+const appError_1 = __importDefault(require("../../errorHelpers/appError"));
 const queryBuilder_1 = require("../../utils/queryBuilder");
 const sendEmail_1 = require("../../utils/sendEmail");
 const message_constants_1 = require("./message.constants");
@@ -60,7 +65,27 @@ const getAllMessageForm = (query) => __awaiter(void 0, void 0, void 0, function*
         meta
     };
 });
+// Get single message by ID
+const getSingleMessage = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield message_model_1.MessageForm.findById(id);
+    if (!result) {
+        throw new appError_1.default(http_status_codes_1.default.NOT_FOUND, "Message not found");
+    }
+    return result;
+});
+exports.getSingleMessage = getSingleMessage;
+// Delete message by ID
+const deleteMessage = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield message_model_1.MessageForm.findByIdAndDelete(id);
+    if (!result) {
+        throw new appError_1.default(http_status_codes_1.default.NOT_FOUND, "Message not found");
+    }
+    return result;
+});
+exports.deleteMessage = deleteMessage;
 exports.MessageFormServices = {
     submitMessageForm,
-    getAllMessageForm
+    getAllMessageForm,
+    deleteMessage: exports.deleteMessage,
+    getSingleMessage: exports.getSingleMessage
 };

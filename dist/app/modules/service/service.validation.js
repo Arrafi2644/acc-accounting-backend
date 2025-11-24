@@ -8,7 +8,11 @@ exports.createServiceTypeZodSchema = zod_1.z.object({
     name: zod_1.z
         .string({ invalid_type_error: "Service type must be string" })
         .min(2, { message: "Service type must be at least 2 characters long." })
-        .max(50, { message: "Service type cannot exceed 50 characters." })
+        .max(50, { message: "Service type cannot exceed 50 characters." }),
+    description: zod_1.z
+        .string({ invalid_type_error: "Service type description must be string" })
+        .min(2, { message: "Service type description must be at least 2 characters long." })
+        .max(80, { message: "Service type description cannot exceed 80 characters." })
 });
 // Sub-service schema
 const subServiceZodSchema = zod_1.z.object({

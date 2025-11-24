@@ -8,8 +8,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ReferralFormServices = void 0;
+const http_status_codes_1 = __importDefault(require("http-status-codes"));
+const appError_1 = __importDefault(require("../../errorHelpers/appError"));
 const queryBuilder_1 = require("../../utils/queryBuilder");
 const sendEmail_1 = require("../../utils/sendEmail");
 const referralForm_constant_1 = require("./referralForm.constant");
@@ -43,7 +48,23 @@ const getAllReferralForm = (query) => __awaiter(void 0, void 0, void 0, function
         meta
     };
 });
+const getSingleReferralForm = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield referralForm_model_1.ReferralForm.findById(id);
+    if (!result) {
+        throw new appError_1.default(http_status_codes_1.default.NOT_FOUND, "Referral form not found");
+    }
+    return result;
+});
+const deleteReferralForm = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield referralForm_model_1.ReferralForm.findByIdAndDelete(id);
+    if (!result) {
+        throw new appError_1.default(http_status_codes_1.default.NOT_FOUND, "Referral form not found");
+    }
+    return result;
+});
 exports.ReferralFormServices = {
     submitReferralForm,
-    getAllReferralForm
+    getAllReferralForm,
+    getSingleReferralForm,
+    deleteReferralForm
 };

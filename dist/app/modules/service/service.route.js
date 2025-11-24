@@ -20,4 +20,5 @@ router.post("/create-service", (0, checkAuth_1.checkAuth)(...Object.values(user_
 router.patch("/update-service/:id", (0, checkAuth_1.checkAuth)(...Object.values(user_interface_1.Role)), multer_config_1.multerUpload.array("files"), (0, validateRequest_1.validateRequest)(service_validation_1.updateServiceZodSchema), service_controller_1.ServiceControllers.updateService);
 router.get("/", service_controller_1.ServiceControllers.getAllServices);
 router.get("/:id", service_controller_1.ServiceControllers.getSingleService);
+router.delete("/:id", (0, checkAuth_1.checkAuth)(...Object.values(user_interface_1.Role)), service_controller_1.ServiceControllers.deleteService);
 exports.serviceRoutes = router;

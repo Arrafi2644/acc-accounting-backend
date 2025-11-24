@@ -11,6 +11,7 @@ const message_route_1 = require("../modules/message/message.route");
 const siteInfo_route_1 = require("../modules/siteInfo/siteInfo.route");
 const testimonial_route_1 = require("../modules/testimonial/testimonial.route");
 const seo_route_1 = require("../modules/seo/seo.route");
+const stats_route_1 = require("../modules/stats/stats.route");
 exports.router = (0, express_1.Router)();
 const moduleRoutes = [
     {
@@ -48,6 +49,10 @@ const moduleRoutes = [
     {
         path: "/seo",
         route: seo_route_1.seoRoutes
+    },
+    {
+        path: "/stats",
+        route: stats_route_1.stateRoutes
     }
 ];
 moduleRoutes.forEach(route => {
