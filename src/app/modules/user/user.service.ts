@@ -6,7 +6,7 @@ import bcryptjs from "bcryptjs";
 import { JwtPayload } from 'jsonwebtoken';
 import { envVars } from '../../config/env';
 import { QueryBuilder } from '../../utils/queryBuilder';
-import { UsersSearchableFields } from './user.constants';
+import { usersSearchableFields } from './user.constants';
 
 const createUserService = async (payload: Partial<IUser>) => {
     const { email, password, ...rest } = payload;
@@ -40,7 +40,7 @@ const getAllUser = async (query: Record<string, string>) => {
     const queryBuilder = new QueryBuilder(User.find(), query);
 
     const users = await queryBuilder
-        .search(UsersSearchableFields)
+        .search(usersSearchableFields)
         .filter()
         .sort()
         .fields()

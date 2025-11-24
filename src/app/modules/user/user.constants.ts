@@ -1,1 +1,1 @@
-export const UsersSearchableFields = ["title", "description", "name"]
+export const usersSearchableFields = ["title", "description", "name"]

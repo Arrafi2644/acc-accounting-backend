@@ -51,7 +51,7 @@ const getMe = (userId) => __awaiter(void 0, void 0, void 0, function* () {
 const getAllUser = (query) => __awaiter(void 0, void 0, void 0, function* () {
     const queryBuilder = new queryBuilder_1.QueryBuilder(user_model_1.User.find(), query);
     const users = yield queryBuilder
-        .search(user_constants_1.UsersSearchableFields)
+        .search(user_constants_1.usersSearchableFields)
         .filter()
         .sort()
         .fields()
