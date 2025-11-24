@@ -1,3 +1,5 @@
+import httpStatus from 'http-status-codes';
+import AppError from "../../errorHelpers/appError";
 import { QueryBuilder } from "../../utils/queryBuilder";
 import { sendEmail } from "../../utils/sendEmail";
 import { ReferralFormSearchableFields } from "./referralForm.constant";
@@ -42,7 +44,33 @@ const getAllReferralForm = async (query: Record<string, string>) => {
     }
 };
 
+const getSingleReferralForm = async (id: string) => {
+    const result = await ReferralForm.findById(id);
+
+    if (!result) {
+        throw new AppError(httpStatus.NOT_FOUND, "Referral form not found");
+    }
+
+    return result;
+};
+
+
+const deleteReferralForm = async (id: string) => {
+    const result = await ReferralForm.findByIdAndDelete(id);
+
+    if (!result) {
+        throw new AppError(httpStatus.NOT_FOUND, "Referral form not found");
+    }
+
+    return result;
+};
+
+
+
+
 export const ReferralFormServices = {
     submitReferralForm,
-    getAllReferralForm
+    getAllReferralForm,
+    getSingleReferralForm,
+    deleteReferralForm
 };

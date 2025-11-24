@@ -8,6 +8,8 @@ import { MessageFormControllers } from "./message.controller";
 const router = express.Router();
 
 router.post('/', validateRequest(MessageFormZodSchema), MessageFormControllers.submitMessageForm);
-router.get('/', checkAuth(...Object.values(Role)), MessageFormControllers.getAllMessageForm);
+router.get('/:id', checkAuth(Role.ADMIN), MessageFormControllers.getSingleMessage);
+router.delete('/:id', checkAuth(Role.ADMIN), MessageFormControllers.deleteMessage);
+router.get('/', checkAuth(Role.ADMIN), MessageFormControllers.getAllMessageForm);
 
 export const messageFormRoutes = router;

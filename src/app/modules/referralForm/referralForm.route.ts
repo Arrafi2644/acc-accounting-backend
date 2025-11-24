@@ -9,7 +9,9 @@ import { Role } from "../user/user.interface";
 const router = express.Router();
 
 router.post('/', validateRequest(ReferralFormZodSchema), ReferralFormControllers.submitReferralForm)
-router.get('/', checkAuth(...Object.values(Role)), ReferralFormControllers.getAllReferralForm)
+router.get('/:id', checkAuth(Role.ADMIN), ReferralFormControllers.getSingleReferralForm)
+router.delete('/:id', checkAuth(Role.ADMIN), ReferralFormControllers.deleteReferralForm)
+router.get('/', checkAuth(Role.ADMIN), ReferralFormControllers.getAllReferralForm)
 
 export const referralFormRoutes = router;
 

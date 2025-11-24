@@ -28,7 +28,35 @@ const getAllReferralForm = catchAsync(async (req: Request, res: Response) => {
     });
 })
 
+const getSingleReferralForm = catchAsync(async (req: Request, res: Response) => {
+    const id: string = req.params.id;
+
+    const result = await ReferralFormServices.getSingleReferralForm(id);
+
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "Referral retrieved successfully",
+        data: result,
+    });
+});
+
+const deleteReferralForm = catchAsync(async (req: Request, res: Response) => {
+    const id: string = req.params.id;
+
+    const result = await ReferralFormServices.deleteReferralForm(id);
+
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "Referral deleted successfully",
+        data: result,
+    });
+});
+
 export const ReferralFormControllers = {
     submitReferralForm,
-    getAllReferralForm
+    getAllReferralForm,
+    deleteReferralForm,
+    getSingleReferralForm
 }

@@ -2,7 +2,8 @@ import { model, Schema } from "mongoose";
 import { IService, IServiceType } from "./service.interface";
 
 const serviceTypeSchema = new Schema<IServiceType>({
-    name: { type: String, required: true, unique: true }
+    name: { type: String, required: true, unique: true },
+    description: { type: String}
 }, {
     timestamps: true
 })

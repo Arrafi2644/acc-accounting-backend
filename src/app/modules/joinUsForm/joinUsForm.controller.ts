@@ -9,24 +9,57 @@ const submitJoinUsForm = catchAsync(async (req: Request, res: Response) => {
     sendResponse(res, {
         statusCode: httpStatus.CREATED,
         success: true,
-        message: 'Form submitted successfully',
+        message: 'Form retrieved successfully',
+        data: result,
+    });
+});
+
+const getSingleJoinUsForm = catchAsync(async (req: Request, res: Response) => {
+    const id: string = req.params.id;
+
+    // Call service to get single form
+    const result = await JoinUsFormServices.getSingleJoinUsForm(id);
+
+    // Send response
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "Form fetched successfully",
         data: result,
     });
 });
 
 const getAllSubmittedFormData = catchAsync(async (req: Request, res: Response) => {
-    const result = await JoinUsFormServices.getAllSubmittedFormData();
+   const query = req.query;
+
+    const result = await JoinUsFormServices.getAllSubmittedFormData(query as Record<string, string>);
 
     sendResponse(res, {
-        success: true,
         statusCode: httpStatus.OK,
-        message: "All Form Data Retrieved Successfully",
-        data: result.data
-    })
+        success: true,
+        message: 'All forms data retrieved successfully',
+        data: result.data,
+        meta: result.meta,
+    });
 })
+
+const deleteJoinUsForm = catchAsync(async (req: Request, res: Response) => {
+    const id: string = req.params.id;
+
+    const result = await JoinUsFormServices.deleteJoinUsForm(id);
+
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "Form deleted successfully",
+        data: result,
+    });
+});
 
 
 export const JoinUsFormControllers = {
 submitJoinUsForm,
-getAllSubmittedFormData
+getAllSubmittedFormData,
+getSingleJoinUsForm,
+deleteJoinUsForm
 }

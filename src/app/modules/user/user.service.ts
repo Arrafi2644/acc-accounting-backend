@@ -5,6 +5,8 @@ import AppError from '../../errorHelpers/appError';
 import bcryptjs from "bcryptjs";
 import { JwtPayload } from 'jsonwebtoken';
 import { envVars } from '../../config/env';
+import { QueryBuilder } from '../../utils/queryBuilder';
+import { UsersSearchableFields } from './user.constants';
 
 const createUserService = async (payload: Partial<IUser>) => {
     const { email, password, ...rest } = payload;
@@ -33,12 +35,28 @@ const getMe = async (userId: string) => {
     }
 };
 
-const getAllUser = async () => {
-    const user = await User.find();
+const getAllUser = async (query: Record<string, string>) => {
+
+    const queryBuilder = new QueryBuilder(User.find(), query);
+
+    const users = await queryBuilder
+        .search(UsersSearchableFields)
+        .filter()
+        .sort()
+        .fields()
+        .paginate();
+
+    const [data, meta] = await Promise.all([
+        users.build(),
+        queryBuilder.getMeta()
+    ]);
+
     return {
-        data: user
-    }
+        data,
+        meta
+    };
 };
+
 
 const getSingleUser = async (id: string) => {
     const user = await User.findById(id);
@@ -49,6 +67,20 @@ const getSingleUser = async (id: string) => {
         data: user
     }
 };
+
+const deleteUser = async (id: string) => {
+    const user = await User.findById(id);
+    if (!user) {
+        throw new AppError(httpStatus.NOT_FOUND, "User Not Found")
+    }
+     
+    await User.findByIdAndDelete(id);
+    
+    return {
+        data: null
+    }
+};
+
 
 // const updateUser = async (userId: string, payload: Partial<IUser>, decodedToken: JwtPayload) => {
 
@@ -126,6 +158,7 @@ export const UserServices = {
     createUserService,
     getMe,
     getAllUser,
+    deleteUser,
     getSingleUser,
     updateUser
 }

@@ -28,7 +28,36 @@ const getAllMessageForm = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
+
+const getSingleMessage = catchAsync(async (req: Request, res: Response) => {
+    const id: string = req.params.id;
+
+    const result = await MessageFormServices.getSingleMessage(id);
+
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "Message retrieved successfully",
+        data: result,
+    });
+});
+
+const deleteMessage = catchAsync(async (req: Request, res: Response) => {
+    const id: string = req.params.id;
+
+    const result = await MessageFormServices.deleteMessage(id);
+
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "Message deleted successfully",
+        data: result,
+    });
+});
+
 export const MessageFormControllers = {
     submitMessageForm,
-    getAllMessageForm
+    getAllMessageForm,
+    deleteMessage,
+    getSingleMessage
 };

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>New Join Us Application Received</title>
+    <style>
+      body {
+        font-family: 'Segoe UI', Arial, sans-serif;
+        background-color: #f4f6f8;
+        color: #333;
+        margin: 0;
+        padding: 0;
+      }
+      .container {
+        max-width: 650px;
+        margin: 40px auto;
+        background-color: #ffffff;
+        padding: 35px 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      }
+      h2 {
+        color: #0066cc;
+        margin-bottom: 10px;
+      }
+      p {
+        line-height: 1.6;
+      }
+      .info-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 25px;
+      }
+      .info-table td {
+        padding: 10px 0;
+        border-bottom: 1px solid #f0f0f0;
+        vertical-align: top;
+      }
+      .info-table td.label {
+        font-weight: bold;
+        width: 35%;
+        color: #222;
+      }
+      .highlight {
+        background-color: #e8f3ff;
+        padding: 12px 15px;
+        border-radius: 6px;
+        margin-top: 20px;
+        color: #004085;
+        border: 1px solid #b8daff;
+      }
+      .footer {
+        margin-top: 30px;
+        font-size: 13px;
+        color: #999;
+        text-align: center;
+        border-top: 1px solid #eee;
+        padding-top: 15px;
+      }
+      .footer a {
+        color: #007bff;
+        text-decoration: none;
+      }
+      .footer a:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <h2>New “Join Us” Form Submission</h2>
+
+      <p>
+        Hello Admin,<br /><br />
+        A new applicant has just filled out the <strong>Join Us</strong> form on
+        your website. Below are the details:
+      </p>
+
+      <table class="info-table">
+        <tr>
+          <td class="label">Company Name:</td>
+          <td><%= name %></td>
+        </tr>
+        <tr>
+          <td class="label">Email Address:</td>
+          <td><%= email %></td>
+        </tr>
+      </table>
+
+      <div class="highlight">
+        Please review the applicant’s information and follow up if suitable.
+      </div>
+
+      <div class="footer">
+        &copy; <%= new Date().getFullYear() %> SAA Accounting. All rights
+        reserved.
+    
+      </div>
+    </div>
+  </body>
+</html>

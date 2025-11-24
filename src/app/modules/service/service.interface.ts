@@ -5,6 +5,7 @@ import { Types } from "mongoose";
 
 export interface IServiceType {
     name: string
+    description: string
 }
 
 export interface IService {

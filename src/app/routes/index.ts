@@ -8,6 +8,7 @@ import { messageFormRoutes } from "../modules/message/message.route";
 import { siteInfoRoutes } from "../modules/siteInfo/siteInfo.route";
 import { testimonialRoutes } from "../modules/testimonial/testimonial.route";
 import { seoRoutes } from "../modules/seo/seo.route";
+import { stateRoutes } from "../modules/stats/stats.route";
 
 export const router = Router();
 
@@ -47,6 +48,10 @@ const moduleRoutes = [
      {
         path: "/seo",
         route: seoRoutes
+    },
+     {
+        path: "/stats",
+        route: stateRoutes
     }
 
 ]

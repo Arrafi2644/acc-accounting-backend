@@ -26,6 +26,7 @@ router.patch( "/update-service/:id",
 );
 router.get("/", ServiceControllers.getAllServices)
 router.get("/:id", ServiceControllers.getSingleService)
+router.delete("/:id", checkAuth(...Object.values(Role)), ServiceControllers.deleteService)
 
 export const serviceRoutes = router;
 

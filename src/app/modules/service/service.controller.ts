@@ -18,12 +18,16 @@ const createServiceType = catchAsync(async (req: Request, res: Response) => {
 });
 
 const getAllServiceTypes = catchAsync(async (req: Request, res: Response) => {
-    const result = await ServiceServices.getAllServiceTypes();
+    const query = req.query;
+
+    const result = await ServiceServices.getAllServiceTypes(query as Record<string, string>);
+
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
-        message: 'All service types retrieved successfully',
-        data: result,
+        message: "Service types retrieved successfully",
+        data: result.data,
+        meta: result.meta,
     });
 });
 
@@ -111,6 +115,19 @@ const getAllServices = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
+const deleteService = catchAsync(async (req: Request, res: Response) => {
+
+    const serviceId = req.params.id
+    const result = await ServiceServices.deleteService(serviceId);
+
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: 'Service Deleted successfully',
+        data: result
+    });
+});
+
 export const ServiceControllers = {
     createServiceType,
     getAllServiceTypes,
@@ -119,5 +136,6 @@ export const ServiceControllers = {
     createService,
     getSingleService,
     updateService,
-    getAllServices
+    getAllServices,
+    deleteService
 }

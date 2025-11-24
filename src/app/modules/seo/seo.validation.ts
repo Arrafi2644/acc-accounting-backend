@@ -22,7 +22,15 @@ export const createSEOZodSchema = z.object({
   }).url("Canonical URL must be a valid URL"),
   ogTitle: z.string().optional(),
   ogDescription: z.string().optional(),
-  ogImage: z.string().url("OG Image must be a valid URL").optional(),
+  // ogImage: z.string().url("OG Image must be a valid URL").optional(),
+  ogImage: z
+    .string()
+    .optional()
+    .refine(
+      (val) => !val || /^https?:\/\/\S+$/.test(val),
+      { message: "OG Image must be a valid URL" }
+    ),
+
 });
 
 export const updateSEOZodSchema = z.object({
@@ -44,7 +52,11 @@ export const updateSEOZodSchema = z.object({
     .optional(),
   ogTitle: z.string().optional(),
   ogDescription: z.string().optional(),
-  ogImage: z.string()
-    .url("OG Image must be a valid URL")
-    .optional(),
+ ogImage: z
+  .string()
+  .optional()
+  .refine(
+    (val) => !val || /^https?:\/\/\S+$/.test(val),
+    { message: "OG Image must be a valid URL" }
+  ).optional(),
 });

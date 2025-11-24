@@ -8,6 +8,8 @@ import { Role } from "../user/user.interface";
 const router = express.Router();
 
 router.post('/', validateRequest(joinUsFormZodSchema), JoinUsFormControllers.submitJoinUsForm)
+router.get('/:id', checkAuth(Role.ADMIN), JoinUsFormControllers.getSingleJoinUsForm)
+router.delete('/:id', checkAuth(Role.ADMIN), JoinUsFormControllers.deleteJoinUsForm)
 router.get('/', checkAuth(Role.ADMIN), JoinUsFormControllers.getAllSubmittedFormData)
 
 export const joinUsFormRoutes = router;

@@ -11,6 +11,7 @@ router.post('/register',validateRequest(createUserZodSchema), UserControllers.cr
 router.get('/me', checkAuth(...Object.values(Role)), UserControllers.getMe)
 router.get('/', checkAuth(Role.ADMIN), UserControllers.getAllUser)
 router.get("/:id", checkAuth(Role.ADMIN), UserControllers.getSingleUser )
+router.delete("/:id", checkAuth(Role.ADMIN), UserControllers.deleteUser )
 router.patch("/:id",
     multerUpload.single("file"),
      validateRequest(updateUserZodSchema), 

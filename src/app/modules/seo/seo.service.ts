@@ -2,8 +2,10 @@ import httpStatus from 'http-status-codes';
 import AppError from "../../errorHelpers/appError";
 import { ISEO } from "./seo.interface";
 import { SEO } from "./seo.model";
+import { QueryBuilder } from '../../utils/queryBuilder';
+import { SEOSearchableFields } from './seo.constants';
 
-const getSEO = async (pagePath: string): Promise<ISEO | null> => {
+const getSinglePageSEO = async (pagePath: string): Promise<ISEO | null> => {
     const seo = await SEO.findOne({ pagePath });
     if(!seo){
         throw new AppError(httpStatus.NOT_FOUND, "SEO info not found for this path")
@@ -39,17 +41,19 @@ const createSEO = async (payload: ISEO): Promise<ISEO> => {
 //     return updated;
 // };
 
-const updateSEO = async (pagePath: string, payload: Partial<ISEO>): Promise<ISEO> => {
-    const existing = await SEO.findOne({ pagePath });
+const updateSEO = async (id: string, payload: Partial<ISEO>): Promise<ISEO> => {
+    // First, check if SEO exists
+    const existing = await SEO.findById(id);
 
     if (!existing) {
-        throw new AppError(httpStatus.NOT_FOUND, "No SEO info found for this page. Use create first.");
+        throw new AppError(httpStatus.NOT_FOUND, "No SEO info found for this page.");
     }
 
+    // Update the document by id
     const updated = await SEO.findByIdAndUpdate(
-        existing._id,
+        id,
         payload,
-        { new: true, runValidators: true }
+        { new: true, runValidators: true } // return updated doc & validate
     );
 
     if (!updated) {
@@ -58,6 +62,7 @@ const updateSEO = async (pagePath: string, payload: Partial<ISEO>): Promise<ISEO
 
     return updated;
 };
+
 
 
 const deleteSEO = async (pagePath: string): Promise<ISEO> => {
@@ -76,9 +81,29 @@ const deleteSEO = async (pagePath: string): Promise<ISEO> => {
     return deleted;
 };
 
+const getAllSeo = async (query: Record<string, string>) => {
+  const queryBuilder = new QueryBuilder(SEO.find(), query);
+
+  const seoResults = await queryBuilder
+    .search(SEOSearchableFields)
+    .filter()
+    .sort()
+    .fields()
+    .paginate();
+
+  const [data, meta] = await Promise.all([
+    seoResults.build(),
+    queryBuilder.getMeta(),
+  ]);
+
+  return { data, meta };
+};
+
+
 export const SEOServices = {
-    getSEO,
+    getSinglePageSEO,
     createSEO,
     updateSEO,
-    deleteSEO
+    deleteSEO,
+    getAllSeo
 };

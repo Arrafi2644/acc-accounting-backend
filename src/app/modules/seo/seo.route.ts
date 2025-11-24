@@ -7,7 +7,8 @@ import { createSEOZodSchema, updateSEOZodSchema } from "./seo.validation";
 
 const router = express.Router();
 
-router.get('/:pagePath', SEOControllers.getSEO);
+router.get('/', SEOControllers.getAllSeo)
+router.get('/:pagePath', SEOControllers.getSinglePageSEO);
 router.post(
     '/',
     checkAuth(...Object.values(Role)),
@@ -16,7 +17,7 @@ router.post(
 );
 
 router.patch(
-    '/:pagePath',
+    '/:id',
     checkAuth(...Object.values(Role)),
     validateRequest(updateSEOZodSchema),
     SEOControllers.updateSEO

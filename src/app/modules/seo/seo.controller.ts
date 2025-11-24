@@ -5,9 +5,9 @@ import { Request, Response } from 'express';
 import { SEOServices } from './seo.service';
 
 // Get SEO info for a page
-const getSEO = catchAsync(async (req: Request, res: Response) => {
+const getSinglePageSEO = catchAsync(async (req: Request, res: Response) => {
     const { pagePath } = req.params;
-    const result = await SEOServices.getSEO(pagePath);
+    const result = await SEOServices.getSinglePageSEO(pagePath);
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
@@ -41,9 +41,10 @@ const createSEO = catchAsync(async (req: Request, res: Response) => {
 // });
 
 const updateSEO = catchAsync(async (req: Request, res: Response) => {
-    const { pagePath } = req.params;
-    const payload = req.body; // Only fields to update
-    const result = await SEOServices.updateSEO(pagePath, payload);
+    const { id } = req.params;          
+    const payload = req.body;            
+
+    const result = await SEOServices.updateSEO(id, payload); 
 
     sendResponse(res, {
         statusCode: httpStatus.OK,
@@ -52,6 +53,7 @@ const updateSEO = catchAsync(async (req: Request, res: Response) => {
         data: result,
     });
 });
+
 
 const deleteSEO = catchAsync(async (req: Request, res: Response) => {
     const { pagePath } = req.params;
@@ -64,9 +66,24 @@ const deleteSEO = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
+const getAllSeo = catchAsync(async (req: Request, res: Response) => {
+    const query = req.query;
+
+    const result = await SEOServices.getAllSeo(query as Record<string, string>);
+
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "SEO data retrieved successfully",
+        data: result.data,
+        meta: result.meta,
+    });
+});
+
 export const SEOControllers = {
-    getSEO,
+    getSinglePageSEO,
     createSEO,
     updateSEO,
-    deleteSEO
+    deleteSEO,
+    getAllSeo
 };

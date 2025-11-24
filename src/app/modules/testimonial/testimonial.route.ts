@@ -24,7 +24,7 @@ router.patch(
 
 router.delete(
   "/:id",
-  checkAuth(Role.ADMIN),
+  checkAuth(...Object.values(Role)),
   TestimonialControllers.deleteTestimonial
 );
 

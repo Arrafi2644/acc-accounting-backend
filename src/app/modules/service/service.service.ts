@@ -20,9 +20,27 @@ const createServiceType = async (payload: IServiceType) => {
     return await ServiceType.create(payload);
 };
 
-const getAllServiceTypes = async () => {
-    return await ServiceType.find();
+const getAllServiceTypes = async (query: Record<string, string>) => {
+    const queryBuilder = new QueryBuilder(ServiceType.find(), query);
+
+    const serviceTypesQuery = queryBuilder
+        .search(["name", "description"])
+        .filter()
+        .sort()
+        .fields()
+        .paginate();
+
+    const [data, meta] = await Promise.all([
+        serviceTypesQuery.build(),
+        queryBuilder.getMeta()     
+    ]);
+
+    return {
+        data,
+        meta
+    };
 };
+
 
 const updateServiceType = async (id: string, payload: IServiceType) => {
     const existingServiceType = await ServiceType.findById(id);
@@ -34,7 +52,7 @@ const updateServiceType = async (id: string, payload: IServiceType) => {
     return updatedServiceType;
 };
 
-const  deleteServiceType = async (id: string) => {
+const deleteServiceType = async (id: string) => {
     const session = await mongoose.startSession();
     session.startTransaction();
 
@@ -73,10 +91,10 @@ const createService = async (payload: IService) => {
 };
 
 const getSingleService = async (serviceId: string) => {
-    
+
     const service = await Service.findById(serviceId).populate("serviceType", "name")
 
-    if(!service){
+    if (!service) {
         throw new AppError(httpStatus.NOT_FOUND, "Service not found")
     }
 
@@ -113,7 +131,7 @@ const updateService = async (id: string, payload: Partial<IService>) => {
     }
 
     return updatedService;
-}; 
+};
 
 const getAllServices = async (query: Record<string, string>) => {
 
@@ -127,7 +145,7 @@ const getAllServices = async (query: Record<string, string>) => {
         .paginate()
 
     const [data, meta] = await Promise.all([
-        services.build(),
+        services.build().populate("serviceType", "name"),
         queryBuilder.getMeta()
     ])
 
@@ -136,6 +154,19 @@ const getAllServices = async (query: Record<string, string>) => {
         meta
     }
 };
+
+const deleteService = async (serviceId: string) => {
+    const service = await Service.findById(serviceId);
+
+    if (!service) {
+        throw new AppError(httpStatus.NOT_FOUND, "Service not found");
+    }
+
+    await service.deleteOne();
+
+    return null;
+};
+
 export const ServiceServices = {
     createServiceType,
     getAllServiceTypes,
@@ -144,5 +175,6 @@ export const ServiceServices = {
     createService,
     getSingleService,
     updateService,
-    getAllServices
+    getAllServices,
+    deleteService
 }

@@ -1,4 +1,4 @@
-export interface IReferralForm extends Document {
+export interface IReferralForm {
     referralName: string;
     yourName: string;
     referralEmail: string;
@@ -8,4 +8,5 @@ export interface IReferralForm extends Document {
     referralAddress: string;
     referralSuburb?: string;
     isHuman: boolean;
-}
+    createdAt?: string;
+} 
