@@ -7,12 +7,11 @@ import { TestimonialSearchableFields } from "./testimonial.constants";
 
 
 
-// 🟡 Create testimonial
 const createTestimonial = async (payload: ITestimonialForm) => {
   const existingTestimonial = await Testimonial.findOne({
-    fullName: payload.fullName,
-    email: payload.email,
-    message: payload.message,
+    clientName: payload.clientName,
+    content: payload.content,
+    companyName: payload.companyName
   });
 
   if (existingTestimonial) {

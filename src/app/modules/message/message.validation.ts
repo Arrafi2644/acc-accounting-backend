@@ -11,7 +11,8 @@ export const MessageFormZodSchema = z.object({
 
   phone: z
     .string({ required_error: "Phone number is required" })
-    .min(5, "Phone number seems too short"),
+    .min(5, "Phone number seems too short")
+    .optional(),
 
   message: z
     .string({ required_error: "Message is required" })
@@ -22,5 +23,6 @@ export const MessageFormZodSchema = z.object({
     .min(2, "Subject must be at least 2 characters long"),
 
   isHuman: z
-    .boolean({ required_error: "Please confirm you are human" }),
+    .boolean({ required_error: "Please confirm you are human" })
+    .optional(),
 });

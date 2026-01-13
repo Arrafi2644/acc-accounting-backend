@@ -4,8 +4,6 @@ exports.SEO = void 0;
 const mongoose_1 = require("mongoose");
 const SEOSchema = new mongoose_1.Schema({
     pagePath: { type: String, required: true, unique: true },
-    pageTitle: { type: String, required: true },
-    pageDescription: { type: String, required: true },
     metaTitle: { type: String, required: true },
     metaDescription: { type: String, required: true },
     metaKeywords: { type: String },

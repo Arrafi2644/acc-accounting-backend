@@ -16,7 +16,6 @@ const MessageFormSchema = new mongoose_1.Schema({
     },
     phone: {
         type: String,
-        required: true,
         trim: true,
     },
     message: {
@@ -31,7 +30,6 @@ const MessageFormSchema = new mongoose_1.Schema({
     },
     isHuman: {
         type: Boolean,
-        required: true,
     },
 }, {
     timestamps: true, // adds createdAt & updatedAt

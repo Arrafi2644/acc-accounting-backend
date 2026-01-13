@@ -4,8 +4,6 @@ import { ISEO } from "./seo.interface";
 const SEOSchema = new Schema<ISEO>(
   {
     pagePath: { type: String, required: true, unique: true },
-    pageTitle: { type: String, required: true },
-    pageDescription: { type: String, required: true },
     metaTitle: { type: String, required: true },
     metaDescription: { type: String, required: true },
     metaKeywords: { type: String },

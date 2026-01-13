@@ -1,81 +1,9 @@
 import httpStatus from 'http-status-codes';
 import AppError from "../../errorHelpers/appError";
-import { IService, IServiceType } from "./service.interface";
-import { Service, ServiceType } from "./service.model";
-import { deleteImageFromCloudinary } from '../../config/cloudinary.config';
+import { IService} from "./service.interface";
+import { Service} from "./service.model";
 import { QueryBuilder } from '../../utils/queryBuilder';
 import { ServicesSearchableFields } from './service.constants';
-import mongoose from 'mongoose';
-
-
-// Service Type 
-const createServiceType = async (payload: IServiceType) => {
-
-    const existingServiceType = await ServiceType.findOne({ name: payload.name });
-
-    if (existingServiceType) {
-        throw new Error("Service type already exists.");
-    }
-
-    return await ServiceType.create(payload);
-};
-
-const getAllServiceTypes = async (query: Record<string, string>) => {
-    const queryBuilder = new QueryBuilder(ServiceType.find(), query);
-
-    const serviceTypesQuery = queryBuilder
-        .search(["name", "description"])
-        .filter()
-        .sort()
-        .fields()
-        .paginate();
-
-    const [data, meta] = await Promise.all([
-        serviceTypesQuery.build(),
-        queryBuilder.getMeta()     
-    ]);
-
-    return {
-        data,
-        meta
-    };
-};
-
-
-const updateServiceType = async (id: string, payload: IServiceType) => {
-    const existingServiceType = await ServiceType.findById(id);
-    if (!existingServiceType) {
-        throw new AppError(httpStatus.NOT_FOUND, "Service type not found.");
-    }
-
-    const updatedServiceType = await ServiceType.findByIdAndUpdate(id, payload, { new: true });
-    return updatedServiceType;
-};
-
-const deleteServiceType = async (id: string) => {
-    const session = await mongoose.startSession();
-    session.startTransaction();
-
-    try {
-        const existingServiceType = await ServiceType.findById(id).session(session);
-        if (!existingServiceType) {
-            throw new AppError(httpStatus.NOT_FOUND, "Service type not found.");
-        }
-
-        await Service.deleteMany({ serviceType: id }).session(session);
-        await ServiceType.findByIdAndDelete(id).session(session);
-
-        await session.commitTransaction();
-        session.endSession();
-
-        return { message: "Service type and related services deleted successfully" };
-    } catch (error) {
-        await session.abortTransaction();
-        session.endSession();
-        throw error;
-    }
-};
-
 
 
 // Service 
@@ -90,9 +18,9 @@ const createService = async (payload: IService) => {
     return service;
 };
 
-const getSingleService = async (serviceId: string) => {
+const getSingleService = async (serviceSlug: string) => {
 
-    const service = await Service.findById(serviceId).populate("serviceType", "name")
+    const service = await Service.findOne({slug: serviceSlug})
 
     if (!service) {
         throw new AppError(httpStatus.NOT_FOUND, "Service not found")
@@ -103,36 +31,18 @@ const getSingleService = async (serviceId: string) => {
 
 const updateService = async (id: string, payload: Partial<IService>) => {
 
-    const existingService = await Service.findById(id);
-
-    if (!existingService) {
-        throw new Error("Service not found.");
-    }
-
-    if (payload.images && payload.images.length > 0 && existingService.images && existingService.images.length > 0) {
-        payload.images = [...payload.images, ...existingService.images]
-    }
-
-    if (payload.deleteImages && payload.deleteImages?.length > 0 && existingService.images && existingService.images.length > 0) {
-        const restDBImages = existingService.images.filter(imageUrl => !payload.deleteImages?.includes(imageUrl))
-
-        const updatedPayloadImages = (payload.images || [])
-            .filter(imageUrl => !payload.deleteImages?.includes(imageUrl))
-            .filter(imageUrl => !restDBImages.includes(imageUrl))
-
-        payload.images = [...restDBImages, ...updatedPayloadImages]
-
-    }
-
-    const updatedService = await Service.findByIdAndUpdate(id, payload, { new: true });
-
-    if (payload.deleteImages && payload.deleteImages.length > 0 && existingService.images && existingService.images.length > 0) {
-        await Promise.all(payload.deleteImages.map(url => deleteImageFromCloudinary(url)))
+    const updatedService = await Service.findByIdAndUpdate(
+        id,
+        payload,
+        { new: true, runValidators: true }
+    );
+    
+    if (!updatedService) {
+        throw new AppError(404, "Service not found");
     }
 
     return updatedService;
-};
-
+}
 const getAllServices = async (query: Record<string, string>) => {
 
     const queryBuilder = new QueryBuilder(Service.find(), query)
@@ -145,7 +55,7 @@ const getAllServices = async (query: Record<string, string>) => {
         .paginate()
 
     const [data, meta] = await Promise.all([
-        services.build().populate("serviceType", "name"),
+        services.build(),
         queryBuilder.getMeta()
     ])
 
@@ -168,10 +78,6 @@ const deleteService = async (serviceId: string) => {
 };
 
 export const ServiceServices = {
-    createServiceType,
-    getAllServiceTypes,
-    updateServiceType,
-    deleteServiceType,
     createService,
     getSingleService,
     updateService,

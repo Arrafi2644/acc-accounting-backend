@@ -1,49 +1,35 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.joinUsFormZodSchema = exports.directorZodSchema = void 0;
+exports.joinUsFormZodSchema = void 0;
 const zod_1 = require("zod");
-exports.directorZodSchema = zod_1.z.object({
-    name: zod_1.z
-        .string({ required_error: "Director name is required." })
-        .min(2, "Name must be at least 2 characters long."),
-    position: zod_1.z
-        .string({ required_error: "Position is required." })
-        .min(2, "Position must be at least 2 characters long."),
-    date: zod_1.z
-        .string({ required_error: "Date is required." })
-        .regex(/^\d{4}-\d{2}-\d{2}$/, "Date must be in YYYY-MM-DD format."),
-    ird: zod_1.z
-        .number({ required_error: "IRD number is required." })
-        .int()
-        .positive("IRD number must be positive."),
-});
 exports.joinUsFormZodSchema = zod_1.z.object({
-    companyName: zod_1.z
-        .string({ required_error: "Company name is required." })
-        .min(2, "Company name must be at least 2 characters long."),
-    companyDate: zod_1.z
-        .string({ required_error: "Company date is required." })
-        .regex(/^\d{4}-\d{2}-\d{2}$/, "Date must be in YYYY-MM-DD format."),
-    companyIRD: zod_1.z
-        .number({ required_error: "Company IRD is required." })
-        .int()
-        .positive("Company IRD must be positive."),
-    director1: exports.directorZodSchema,
-    director2: exports.directorZodSchema,
-    address: zod_1.z
-        .string({ required_error: "Address is required." })
-        .min(5, "Address must be at least 5 characters long."),
-    phoneBusiness: zod_1.z
-        .string({ required_error: "Business phone is required." })
+    businessName: zod_1.z
+        .string({ required_error: "Business name is required." })
+        .min(2, "Business name must be at least 2 characters long."),
+    directorsAndShareholders: zod_1.z
+        .string({ required_error: "Directors and Shareholders field is required." })
+        .min(2, "Directors and Shareholders must be at least 2 characters long."),
+    irdNumber: zod_1.z
+        .string({ required_error: "IRD number is required." })
+        .regex(/^\d+$/, "IRD number must contain only digits"), // numeric string validation
+    fullName: zod_1.z
+        .string({ required_error: "Full name is required." })
+        .min(2, "Full name must be at least 2 characters long."),
+    phoneNumber: zod_1.z
+        .string({ required_error: "Phone number is required." })
         .min(6, "Phone number must be valid."),
-    phoneHome: zod_1.z.string().optional(),
-    phoneMobile: zod_1.z
-        .string({ required_error: "Mobile phone is required." })
-        .min(6, "Phone number must be valid."),
-    email: zod_1.z
+    emailAddress: zod_1.z
         .string({ required_error: "Email is required." })
-        .email("Invalid email format."),
-    isHuman: zod_1.z
-        .boolean({ required_error: "Verification (I am human) is required." })
-        .refine(val => val === true, "You must confirm you are human."),
+        .email("Invalid email address."),
+    authorityConsent: zod_1.z.preprocess((val) => {
+        if (val === "true" || val === true)
+            return true;
+        if (val === "false" || val === false)
+            return false;
+        return false;
+    }, zod_1.z.boolean({ required_error: "Authority consent is required." })),
+    documents: zod_1.z
+        .array(zod_1.z.string())
+        .optional()
+        .default([]),
 });

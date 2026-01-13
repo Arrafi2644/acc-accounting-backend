@@ -5,11 +5,15 @@ import { catchAsync } from '../../utils/catchAsync';
 import { JoinUsFormServices } from './joinUsForm.service';
 
 const submitJoinUsForm = catchAsync(async (req: Request, res: Response) => {
-    const result = await JoinUsFormServices.submitJoinUsForm(req.body);
+    const payload = {
+        ...req.body,
+        documents: (req.files as Express.Multer.File[]).map(file => file.path)
+    }
+    const result = await JoinUsFormServices.submitJoinUsForm(payload);
     sendResponse(res, {
         statusCode: httpStatus.CREATED,
         success: true,
-        message: 'Form retrieved successfully',
+        message: 'Form submitted successfully',
         data: result,
     });
 });
@@ -33,7 +37,6 @@ const getAllSubmittedFormData = catchAsync(async (req: Request, res: Response) =
    const query = req.query;
 
     const result = await JoinUsFormServices.getAllSubmittedFormData(query as Record<string, string>);
-
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,

@@ -4,77 +4,160 @@ import { catchAsync } from "../../utils/catchAsync";
 import { sendResponse } from "../../utils/sendResponse";
 import { ServiceServices } from "./service.service";
 import { IService } from './service.interface';
+import { createServiceZodSchema, updateServiceZodSchema } from './service.validation';
+import AppError from '../../errorHelpers/appError';
+import { Service } from './service.model';
+import { deleteImageFromCloudinary } from '../../config/cloudinary.config';
 
-// Service Types  
-const createServiceType = catchAsync(async (req: Request, res: Response) => {
-    const name = req.body;
-    const result = await ServiceServices.createServiceType(name);
-    sendResponse(res, {
-        statusCode: httpStatus.CREATED,
-        success: true,
-        message: 'Service type created successfully',
-        data: result,
-    });
-});
+// Services 
 
-const getAllServiceTypes = catchAsync(async (req: Request, res: Response) => {
-    const query = req.query;
-
-    const result = await ServiceServices.getAllServiceTypes(query as Record<string, string>);
-
-    sendResponse(res, {
-        statusCode: httpStatus.OK,
-        success: true,
-        message: "Service types retrieved successfully",
-        data: result.data,
-        meta: result.meta,
-    });
-});
-
-const updateServiceType = catchAsync(async (req: Request, res: Response) => {
-    const id = req.params.id
-    const name = req.body;
-    const result = await ServiceServices.updateServiceType(id, name);
-    sendResponse(res, {
-        statusCode: httpStatus.OK,
-        success: true,
-        message: 'Service type updated successfully',
-        data: result,
-    });
-});
-
-const deleteServiceType = catchAsync(async (req: Request, res: Response) => {
-    const { id } = req.params;
-    const result = await ServiceServices.deleteServiceType(id);
-    sendResponse(res, {
-        statusCode: 200,
-        success: true,
-        message: 'Service type deleted successfully',
-        data: result,
-    });
-});
-
-// Services  
 const createService = catchAsync(async (req: Request, res: Response) => {
+  //  Parse JSON data
+  const data = req.body.data ? JSON.parse(req.body.data) : req.body;
 
-    const payload: IService = {
-        ...req.body,
-        images: (req.files as Express.Multer.File[]).map(file => file.path)
-    }
-    const result = await ServiceServices.createService(payload);
+  // Only allowed file (service image)
+  const files = req.files as Record<string, Express.Multer.File[]> | undefined;
+  const serviceImage = files?.serviceImage?.[0]?.path;
+  if (!serviceImage) {
+  throw new AppError(400, "Service image is required");
+}
 
-    sendResponse(res, {
-        statusCode: httpStatus.CREATED,
-        success: true,
-        message: 'Service created successfully',
-        data: result
-    });
+  //  Build payload (NO extra fields)
+  const payload: IService = {
+    title: data.title,
+    serviceSummary: data.serviceSummary,
+    shortDescription: data.shortDescription,
+
+    // string icon (not file)
+    serviceIcon: data.serviceIcon,
+
+    banner: {
+      title: data.banner.title,
+      subtitle: data.banner.subtitle,
+    },
+
+    overView: {
+      title: data.overView.title,
+      description: data.overView.description,
+      features: data.overView.features,
+      serviceImage: serviceImage, // required
+    },
+
+    serviceMatter: data.serviceMatter,
+    features: data.features,
+    processSteps: data.processSteps,
+    requirementDocs: data.requirementDocs,
+    faqs: data.faqs,
+  };
+
+  // Zod validation
+  const parsed = createServiceZodSchema.safeParse(payload);
+  if (!parsed.success) {
+    throw new AppError(
+      400,
+      parsed.error.issues.map(i => `${i.path.join(".")} ${i.message}`).join(", ")
+    );
+  }
+
+  // Save to DB
+  const result = await ServiceServices.createService(parsed.data);
+
+  // Response
+  sendResponse(res, {
+    statusCode: 201,
+    success: true,
+    message: "Service created successfully!",
+    data: result,
+  });
 });
+
+
+
+const updateService = catchAsync(async (req: Request, res: Response) => {
+  const serviceId = req.params.id;
+
+  // Parse JSON data
+  const data = req.body.data ? JSON.parse(req.body.data) : req.body;
+
+  //  Only image file (NO icon files)
+  const files = req.files as Record<string, Express.Multer.File[]> | undefined;
+  const serviceImage = files?.serviceImage?.[0]?.path;
+
+  // Fetch existing service
+  const existingServiceDoc = await Service.findById(serviceId);
+  if (!existingServiceDoc) {
+    throw new AppError(404, "Service not found");
+  }
+
+  const existingService = existingServiceDoc.toObject();
+
+  // Merge payload
+  const payload: Partial<IService> = {
+    title: data.title ?? existingService.title,
+    serviceSummary: data.serviceSummary ?? existingService.serviceSummary,
+    shortDescription: data.shortDescription ?? existingService.shortDescription,
+
+    // serviceIcon is STRING, not file
+    serviceIcon: data.serviceIcon ?? existingService.serviceIcon,
+
+    banner: {
+      ...existingService.banner,
+      ...(data.banner ?? {}),
+    },
+
+    overView: {
+      ...existingService.overView,
+      ...(data.overView ?? {}),
+      serviceImage: serviceImage ?? existingService.overView.serviceImage,
+    },
+
+    serviceMatter: data.serviceMatter ?? existingService.serviceMatter,
+    features: data.features ?? existingService.features,
+    processSteps: data.processSteps ?? existingService.processSteps,
+    requirementDocs: data.requirementDocs ?? existingService.requirementDocs,
+    faqs: data.faqs ?? existingService.faqs,
+  };
+
+  // Zod validation
+  const parsed = updateServiceZodSchema.safeParse(payload);
+  if (!parsed.success) {
+    throw new AppError(
+      400,
+      parsed.error.issues
+        .map(i => `${i.path.join(".")} ${i.message}`)
+        .join(", ")
+    );
+  }
+
+  // Update DB
+  const updatedService = await ServiceServices.updateService(
+    serviceId,
+    parsed.data
+  );
+
+  if (!updatedService) {
+    throw new AppError(500, "Failed to update service");
+  }
+
+  // Delete old image if replaced
+  if (serviceImage && existingService.overView.serviceImage) {
+    await deleteImageFromCloudinary(existingService.overView.serviceImage);
+  }
+
+  // Response
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Service updated successfully!",
+    data: updatedService,
+  });
+});
+
 
 const getSingleService = catchAsync(async (req: Request, res: Response) => {
 
-    const serviceId = req.params.id
-    const result = await ServiceServices.getSingleService(serviceId);
+    const serviceSlug = req.params.slug
+    const result = await ServiceServices.getSingleService(serviceSlug);
 
     sendResponse(res, {
         statusCode: httpStatus.OK,
@@ -84,28 +167,13 @@ const getSingleService = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
-const updateService = catchAsync(async (req: Request, res: Response) => {
-         const payload: IService = {
-        ...req.body,
-        images: (req.files as Express.Multer.File[]).map(file => file.path)
-    }
-
-    const result = await ServiceServices.updateService(req.params.id, payload);
-
-    sendResponse(res, {
-        statusCode: httpStatus.CREATED,
-        success: true,
-        message: 'Service updated successfully',
-        data: result
-    });
-});
 
 const getAllServices = catchAsync(async (req: Request, res: Response) => {
 
     const query = req.query
 
     const result = await ServiceServices.getAllServices(query as Record<string, string>);
-    
+
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
@@ -129,10 +197,6 @@ const deleteService = catchAsync(async (req: Request, res: Response) => {
 });
 
 export const ServiceControllers = {
-    createServiceType,
-    getAllServiceTypes,
-    updateServiceType,
-    deleteServiceType,
     createService,
     getSingleService,
     updateService,

@@ -1,52 +1,43 @@
+
 import { z } from "zod";
 
-export const directorZodSchema = z.object({
-  name: z
-    .string({ required_error: "Director name is required." })
-    .min(2, "Name must be at least 2 characters long."),
-  position: z
-    .string({ required_error: "Position is required." })
-    .min(2, "Position must be at least 2 characters long."),
-  date: z
-    .string({ required_error: "Date is required." })
-    .regex(/^\d{4}-\d{2}-\d{2}$/, "Date must be in YYYY-MM-DD format."),
-  ird: z
-    .number({ required_error: "IRD number is required." })
-    .int()
-    .positive("IRD number must be positive."),
-});
-
 export const joinUsFormZodSchema = z.object({
-  companyName: z
-    .string({ required_error: "Company name is required." })
-    .min(2, "Company name must be at least 2 characters long."),
-  companyDate: z
-    .string({ required_error: "Company date is required." })
-    .regex(/^\d{4}-\d{2}-\d{2}$/, "Date must be in YYYY-MM-DD format."),
-  companyIRD: z
-    .number({ required_error: "Company IRD is required." })
-    .int()
-    .positive("Company IRD must be positive."),
+  businessName: z
+    .string({ required_error: "Business name is required." })
+    .min(2, "Business name must be at least 2 characters long."),
 
-  director1: directorZodSchema,
-  director2: directorZodSchema,
+  directorsAndShareholders: z
+    .string({ required_error: "Directors and Shareholders field is required." })
+    .min(2, "Directors and Shareholders must be at least 2 characters long."),
 
-  address: z
-    .string({ required_error: "Address is required." })
-    .min(5, "Address must be at least 5 characters long."),
-  phoneBusiness: z
-    .string({ required_error: "Business phone is required." })
+  irdNumber: z
+    .string({ required_error: "IRD number is required." })
+    .regex(/^\d+$/, "IRD number must contain only digits"), // numeric string validation
+
+  fullName: z
+    .string({ required_error: "Full name is required." })
+    .min(2, "Full name must be at least 2 characters long."),
+
+  phoneNumber: z
+    .string({ required_error: "Phone number is required." })
     .min(6, "Phone number must be valid."),
-  phoneHome: z.string().optional(),
-  phoneMobile: z
-    .string({ required_error: "Mobile phone is required." })
-    .min(6, "Phone number must be valid."),
-  email: z
+
+  emailAddress: z
     .string({ required_error: "Email is required." })
-    .email("Invalid email format."),
-  isHuman: z
-    .boolean({ required_error: "Verification (I am human) is required." })
-    .refine(val => val === true, "You must confirm you are human."),
+    .email("Invalid email address."),
+
+  authorityConsent: z.preprocess(
+    (val) => {
+      if (val === "true" || val === true) return true;
+      if (val === "false" || val === false) return false;
+      return false;
+    },
+    z.boolean({ required_error: "Authority consent is required." })
+  ),
+  documents: z
+    .array(z.string())
+    .optional()
+    .default([]),
 });
 
 export type JoinUsFormZodType = z.infer<typeof joinUsFormZodSchema>;

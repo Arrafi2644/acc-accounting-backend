@@ -20,7 +20,6 @@ const getAllTestimonials = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
-
 const createTestimonial = catchAsync(async (req: Request, res: Response) => {
     const payload = req.body;
     const result = await TestimonialServices.createTestimonial(payload);

@@ -45,7 +45,7 @@ export class QueryBuilder<T> {
 
     paginate(): this {
         const page = Number(this.query.page) || 1;
-        const limit = Number(this.query.limit) || 10;
+        const limit = Number(this.query.limit) || 12;
         const skip = (page - 1) * limit;
         this.modelQuery = this.modelQuery.skip(skip).limit(limit)
         return this;
@@ -53,7 +53,7 @@ export class QueryBuilder<T> {
 
     build() {
         return this.modelQuery;
-    }
+    } 
 
     async getMeta() {
         const totalDocuments = await this.modelQuery.model.countDocuments()

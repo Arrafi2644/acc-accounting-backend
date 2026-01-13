@@ -1,38 +1,29 @@
 import { z } from "zod";
 
-export const siteInfoZodSchema = z.object({
-  // Site & Branding
+// Create Schema - required fields must be present
+export const createSiteInfoSchema = z.object({
   siteTitle: z.string().optional(),
   siteTagline: z.string().optional(),
-  logoUrl: z.string().url().optional(),
-  faviconUrl: z.string().url().optional(),
+  mainLogo: z.string(),        // required
+  faviconLogo: z.string().optional(),
+  footerLogo: z.string(),      // required
 
-  // Contact Details
-  adminEmail: z.string().email().optional(),
   supportEmail: z.string().email().optional(),
+  mainEmail: z.string().email().optional(),
   phone: z.string().optional(),
   supportPhone: z.string().optional(),
   address: z.string().optional(),
-  businessHours: z
-    .object({
-      days: z.array(z.string()).optional(),
-      start: z.string().optional(),
-      end: z.string().optional(),
-    })
-    .optional(),
-  mapEmbedUrl: z.string().url().optional(),
+  mapEmbedUrl: z.string().optional(),
 
-  // Social Media
-  social: z
-    .object({
-      facebook: z.string().url().optional(),
-      linkedin: z.string().url().optional(),
-      youtube: z.string().url().optional(),
-      twitter: z.string().url().optional(),
-      instagram: z.string().url().optional(),
-      tiktok: z.string().url().optional(),
-      pinterest: z.string().url().optional(),
-      whatsapp: z.string().url().optional(),
-    })
-    .optional(),
+  facebook: z.string().url().optional(),
+  linkedin: z.string().url().optional(),
+  youtube: z.string().url().optional(),
+  twitter: z.string().url().optional(),
+  instagram: z.string().url().optional(),
+  tiktok: z.string().url().optional(),
+  pinterest: z.string().url().optional(),
+  whatsapp: z.string().url().optional(),
 });
+
+// Update Schema - all fields optional
+export const updateSiteInfoSchema = createSiteInfoSchema.partial();

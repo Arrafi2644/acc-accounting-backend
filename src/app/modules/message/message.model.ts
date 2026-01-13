@@ -16,7 +16,6 @@ const MessageFormSchema = new Schema<IMessageForm>(
         },
         phone: {
             type: String,
-            required: true,
             trim: true,
         },
         message: {
@@ -31,7 +30,6 @@ const MessageFormSchema = new Schema<IMessageForm>(
         },
         isHuman: {
             type: Boolean,
-            required: true,
         },
     },
     {

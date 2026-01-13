@@ -7,7 +7,6 @@ import { createNewAccessTokenWithRefreshToken, createUserTokens } from '../../ut
 import { JwtPayload } from 'jsonwebtoken';
 import { envVars } from '../../config/env';
 
-
 const credentialsLogin = async (payload: Partial<IUser>) => {
     const { email, password } = payload;
 
@@ -37,8 +36,8 @@ const credentialsLogin = async (payload: Partial<IUser>) => {
 }
 
 const getNewAccessToken = async (refreshToken: string) => {
+   
     const newAccessToken = await createNewAccessTokenWithRefreshToken(refreshToken)
-
     return {
         accessToken: newAccessToken
     }
@@ -48,9 +47,9 @@ const changePassword = async (oldPassword: string, newPassword: string, decodedT
 
     const user = await User.findById(decodedToken.userId)
 
-   if (!user) {
-    throw new AppError(httpStatus.NOT_FOUND, "User not found");
-  }
+    if (!user) {
+        throw new AppError(httpStatus.NOT_FOUND, "User not found");
+    }
 
     const isOldPasswordMatch = await bcryptjs.compare(oldPassword, user.password as string)
     if (!isOldPasswordMatch) {

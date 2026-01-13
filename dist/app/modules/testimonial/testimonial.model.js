@@ -3,48 +3,55 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Testimonial = void 0;
 const mongoose_1 = require("mongoose");
 const TestimonialSchema = new mongoose_1.Schema({
-    fullName: {
+    partnershipLabel: {
         type: String,
-        required: [true, "Full name is required"],
+        required: true,
         trim: true,
     },
-    email: {
-        type: String,
-        required: [true, "Email is required"],
-        lowercase: true,
+    rating: {
+        type: Number,
+        required: true,
+        min: 1,
+        max: 5,
     },
-    companyName: {
+    content: {
         type: String,
-        default: null,
+        required: true,
+        trim: true,
+    },
+    clientName: {
+        type: String,
+        required: true,
+        trim: true,
     },
     designation: {
         type: String,
         default: null,
     },
-    rating: {
-        type: Number,
-        required: [true, "Rating is required"],
-        min: [1, "Minimum rating is 1"],
-        max: [5, "Maximum rating is 5"],
-    },
-    message: {
+    companyName: {
         type: String,
-        required: [true, "Message is required"],
+        required: true,
         trim: true,
     },
-    photoUrl: {
+    location: {
         type: String,
-        default: null,
+        required: true,
+        trim: true,
     },
-    date: {
+    industry: {
         type: String,
-        default: () => new Date().toISOString(),
+        required: true,
+        trim: true,
     },
     isApproved: {
         type: Boolean,
-        default: false, // initially not approved
+        default: false,
     },
+    isFeatured: {
+        type: Boolean,
+        default: false
+    }
 }, {
-    timestamps: true, // adds createdAt and updatedAt automatically
+    timestamps: true,
 });
 exports.Testimonial = (0, mongoose_1.model)("Testimonial", TestimonialSchema);

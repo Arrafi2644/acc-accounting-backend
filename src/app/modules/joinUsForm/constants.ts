@@ -1,1 +1,1 @@
-export const JoinUsFormSearchableFields = ["companyName", "email"]
+export const JoinUsFormSearchableFields = ["businessName", "fullName", "irdNumber", "emailAddress"]

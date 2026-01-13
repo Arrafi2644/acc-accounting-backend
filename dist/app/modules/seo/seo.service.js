@@ -33,21 +33,6 @@ const createSEO = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     const newSEO = yield seo_model_1.SEO.create(payload);
     return newSEO;
 });
-// const updateSEO = async (payload: ISEO): Promise<ISEO> => {
-//     const existing = await SEO.findOne({ pagePath: payload.pagePath });
-//     if (!existing) {
-//         throw new AppError(httpStatus.NOT_FOUND, "No SEO info found for this page. Use create first.");
-//     }
-//     const updated = await SEO.findByIdAndUpdate(
-//         existing._id,
-//         payload,
-//         { new: true, runValidators: true } // return the updated document
-//     );
-//     if (!updated) {
-//         throw new AppError(httpStatus.INTERNAL_SERVER_ERROR, "Failed to update SEO info.");
-//     }
-//     return updated;
-// };
 const updateSEO = (id, payload) => __awaiter(void 0, void 0, void 0, function* () {
     // First, check if SEO exists
     const existing = yield seo_model_1.SEO.findById(id);

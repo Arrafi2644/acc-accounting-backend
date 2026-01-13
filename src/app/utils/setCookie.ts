@@ -10,7 +10,8 @@ export const setAuthCookie = (res: Response, tokenInfo: AuthToken) => {
         res.cookie("accessToken", tokenInfo.accessToken, {
             httpOnly: true,
             secure: true,
-            sameSite: "none"
+            sameSite: "none",
+            maxAge: 1000 * 60 * 60 * 24
         })
     }
 
@@ -18,7 +19,9 @@ export const setAuthCookie = (res: Response, tokenInfo: AuthToken) => {
         res.cookie("refreshToken", tokenInfo.refreshToken, {
             httpOnly: true,
             secure: true,
-            sameSite: "none"
+            sameSite: "none",
+            maxAge: 1000 * 60 * 60 * 24 * 7
+
         })
     }
 }

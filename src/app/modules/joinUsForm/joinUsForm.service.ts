@@ -16,25 +16,25 @@ const submitJoinUsForm = async (payload: IJoinUsForm) => {
     // }
     const result = await JoinUsForm.create(payload);
 
-    sendEmail({
-        to: result.email,
-        subject: "Form Submission",
-        templateName: "joinUsForm",
-        templateData: {
-            name: result.companyName
-        }
-    })
-
-      // Send notification to company/admin
-      await sendEmail({
-        to: envVars.COMPANY_EMAIL,
-        subject: "New “Join Us” Form Submission",
-        templateName: "joinUsFormAdmin",
-        templateData: {
-          name: result.companyName,
-          email: result.email
-        },
-      });
+    await Promise.all([
+        sendEmail({
+            to: result.emailAddress,
+            subject: "Form Submission",
+            templateName: "joinUsForm",
+            templateData: {
+                name: result.businessName,
+            },
+        }),
+        sendEmail({
+            to: envVars.COMPANY_EMAIL,
+            subject: "New “Join Us” Form Submission",
+            templateName: "joinUsFormAdmin",
+            templateData: {
+                name: result.businessName,
+                email: result.emailAddress,
+            },
+        }),
+    ]);
     return result;
 };
 

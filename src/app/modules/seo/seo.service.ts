@@ -22,25 +22,6 @@ const createSEO = async (payload: ISEO): Promise<ISEO> => {
     return newSEO;
 };
 
-// const updateSEO = async (payload: ISEO): Promise<ISEO> => {
-//     const existing = await SEO.findOne({ pagePath: payload.pagePath });
-//     if (!existing) {
-//         throw new AppError(httpStatus.NOT_FOUND, "No SEO info found for this page. Use create first.");
-//     }
-
-//     const updated = await SEO.findByIdAndUpdate(
-//         existing._id,
-//         payload,
-//         { new: true, runValidators: true } // return the updated document
-//     );
-
-//     if (!updated) {
-//         throw new AppError(httpStatus.INTERNAL_SERVER_ERROR, "Failed to update SEO info.");
-//     }
-
-//     return updated;
-// };
-
 const updateSEO = async (id: string, payload: Partial<ISEO>): Promise<ISEO> => {
     // First, check if SEO exists
     const existing = await SEO.findById(id);

@@ -18,12 +18,11 @@ const testimonial_model_1 = require("./testimonial.model");
 const appError_1 = __importDefault(require("../../errorHelpers/appError"));
 const queryBuilder_1 = require("../../utils/queryBuilder");
 const testimonial_constants_1 = require("./testimonial.constants");
-// 🟡 Create testimonial
 const createTestimonial = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     const existingTestimonial = yield testimonial_model_1.Testimonial.findOne({
-        fullName: payload.fullName,
-        email: payload.email,
-        message: payload.message,
+        clientName: payload.clientName,
+        content: payload.content,
+        companyName: payload.companyName
     });
     if (existingTestimonial) {
         throw new appError_1.default(http_status_codes_1.default.BAD_REQUEST, "A similar testimonial already exists.");

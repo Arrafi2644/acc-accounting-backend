@@ -12,6 +12,8 @@ const siteInfo_route_1 = require("../modules/siteInfo/siteInfo.route");
 const testimonial_route_1 = require("../modules/testimonial/testimonial.route");
 const seo_route_1 = require("../modules/seo/seo.route");
 const stats_route_1 = require("../modules/stats/stats.route");
+const resources_route_1 = require("../modules/resources/resources.route");
+const newsletter_route_1 = require("../modules/newsletter/newsletter.route");
 exports.router = (0, express_1.Router)();
 const moduleRoutes = [
     {
@@ -53,6 +55,14 @@ const moduleRoutes = [
     {
         path: "/stats",
         route: stats_route_1.stateRoutes
+    },
+    {
+        path: "/resources",
+        route: resources_route_1.ResourceRoutes
+    },
+    {
+        path: "/newsletters",
+        route: newsletter_route_1.newsletterRoutes
     }
 ];
 moduleRoutes.forEach(route => {

@@ -3,50 +3,62 @@ import { ITestimonialForm } from "./testimonial.interface";
 
 const TestimonialSchema = new Schema<ITestimonialForm>(
   {
-    fullName: {
+    partnershipLabel: {
       type: String,
-      required: [true, "Full name is required"],
+      required: true,
       trim: true,
     },
-    email: {
-      type: String,
-      required: [true, "Email is required"],
-      lowercase: true,
+
+    rating: {
+      type: Number,
+      required: true,
+      min: 1,
+      max: 5,
     },
-    companyName: {
+
+    content: {
       type: String,
-      default: null,
+      required: true,
+      trim: true,
+    },
+
+    clientName: {
+      type: String,
+      required: true,
+      trim: true,
     },
     designation: {
       type: String,
       default: null,
     },
-    rating: {
-      type: Number,
-      required: [true, "Rating is required"],
-      min: [1, "Minimum rating is 1"],
-      max: [5, "Maximum rating is 5"],
-    },
-    message: {
+    companyName: {
       type: String,
-      required: [true, "Message is required"],
+      required: true,
       trim: true,
     },
-    photoUrl: {
+
+    location: {
       type: String,
-      default: null,
+      required: true,
+      trim: true,
     },
-    date: {
+
+    industry: {
       type: String,
-      default: () => new Date().toISOString(),
+      required: true,
+      trim: true,
     },
     isApproved: {
       type: Boolean,
-      default: false, // initially not approved
+      default: false,
     },
+    isFeatured: {
+      type: Boolean,
+      default: false
+    }
   },
   {
-    timestamps: true, // adds createdAt and updatedAt automatically
+    timestamps: true, 
   }
 );
 

@@ -1,6 +1,4 @@
 import express from "express";
-import { validateRequest } from "../../middlewares/validateRequest";
-import { createServiceTypeZodSchema, createServiceZodSchema, updateServiceZodSchema } from "./service.validation";
 import { checkAuth } from "../../middlewares/checkAuth";
 import { Role } from "../user/user.interface";
 import { ServiceControllers } from "./service.controller";
@@ -8,24 +6,26 @@ import { multerUpload } from "../../config/multer.config";
 
 const router = express.Router();
 
-router.post('/create-service-type', validateRequest(createServiceTypeZodSchema), checkAuth(Role.ADMIN), ServiceControllers.createServiceType)
-router.get('/service-types', ServiceControllers.getAllServiceTypes)
-router.patch("/service-types/:id", checkAuth(Role.ADMIN), validateRequest(createServiceTypeZodSchema), ServiceControllers.updateServiceType);
-router.delete("/service-types/:id", checkAuth(Role.ADMIN), ServiceControllers.deleteServiceType);
-router.post( "/create-service",
+router.post(
+    "/create-service",
     checkAuth(...Object.values(Role)),
-    multerUpload.array("files"),
-    validateRequest(createServiceZodSchema),
+    multerUpload.fields([
+        { name: "serviceImage", maxCount: 1 },
+    ]),
     ServiceControllers.createService
 );
-router.patch( "/update-service/:id",
+
+router.patch(
+    "/update-service/:id",
     checkAuth(...Object.values(Role)),
-    multerUpload.array("files"),
-    validateRequest(updateServiceZodSchema),
+    multerUpload.fields([
+        { name: "serviceImage", maxCount: 1 },
+    ]),
     ServiceControllers.updateService
 );
+
+router.get("/:slug", ServiceControllers.getSingleService)
 router.get("/", ServiceControllers.getAllServices)
-router.get("/:id", ServiceControllers.getSingleService)
 router.delete("/:id", checkAuth(...Object.values(Role)), ServiceControllers.deleteService)
 
 export const serviceRoutes = router;

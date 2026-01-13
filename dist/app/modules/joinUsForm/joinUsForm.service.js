@@ -26,24 +26,25 @@ const submitJoinUsForm = (payload) => __awaiter(void 0, void 0, void 0, function
     //     throw new Error("User already submitted this form.");
     // }
     const result = yield joinUsForm_model_1.JoinUsForm.create(payload);
-    (0, sendEmail_1.sendEmail)({
-        to: result.email,
-        subject: "Form Submission",
-        templateName: "joinUsForm",
-        templateData: {
-            name: result.companyName
-        }
-    });
-    // Send notification to company/admin
-    yield (0, sendEmail_1.sendEmail)({
-        to: env_1.envVars.COMPANY_EMAIL,
-        subject: "New “Join Us” Form Submission",
-        templateName: "joinUsFormAdmin",
-        templateData: {
-            name: result.companyName,
-            email: result.email
-        },
-    });
+    yield Promise.all([
+        (0, sendEmail_1.sendEmail)({
+            to: result.emailAddress,
+            subject: "Form Submission",
+            templateName: "joinUsForm",
+            templateData: {
+                name: result.businessName,
+            },
+        }),
+        (0, sendEmail_1.sendEmail)({
+            to: env_1.envVars.COMPANY_EMAIL,
+            subject: "New “Join Us” Form Submission",
+            templateName: "joinUsFormAdmin",
+            templateData: {
+                name: result.businessName,
+                email: result.emailAddress,
+            },
+        }),
+    ]);
     return result;
 });
 const getSingleJoinUsForm = (id) => __awaiter(void 0, void 0, void 0, function* () {

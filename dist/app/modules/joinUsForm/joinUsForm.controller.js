@@ -18,11 +18,12 @@ const sendResponse_1 = require("../../utils/sendResponse");
 const catchAsync_1 = require("../../utils/catchAsync");
 const joinUsForm_service_1 = require("./joinUsForm.service");
 const submitJoinUsForm = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield joinUsForm_service_1.JoinUsFormServices.submitJoinUsForm(req.body);
+    const payload = Object.assign(Object.assign({}, req.body), { documents: req.files.map(file => file.path) });
+    const result = yield joinUsForm_service_1.JoinUsFormServices.submitJoinUsForm(payload);
     (0, sendResponse_1.sendResponse)(res, {
         statusCode: http_status_codes_1.default.CREATED,
         success: true,
-        message: 'Form retrieved successfully',
+        message: 'Form submitted successfully',
         data: result,
     });
 }));

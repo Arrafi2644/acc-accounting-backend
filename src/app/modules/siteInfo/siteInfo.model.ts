@@ -1,36 +1,29 @@
 import mongoose from "mongoose";
 import { ISiteInfo } from "./siteInfo.interface";
 
-const SiteInfoSchema  = new mongoose.Schema<ISiteInfo>({
+const SiteInfoSchema = new mongoose.Schema<ISiteInfo>(
+  {
     siteTitle: { type: String },
     siteTagline: { type: String },
-    logoUrl: { type: String },
-    faviconUrl: { type: String },
+    mainLogo: { type: String, required: true },
+    faviconLogo: { type: String },
+    footerLogo: { type: String, required: true },
 
-    adminEmail: { type: String },
+    mainEmail: { type: String },
     supportEmail: { type: String },
     phone: { type: String },
     supportPhone: { type: String },
     address: { type: String },
-
-    businessHours: {
-      days: [{ type: String }],
-      start: { type: String },
-      end: { type: String },
-    },
-
     mapEmbedUrl: { type: String },
 
-    social: {
-      facebook: { type: String },
-      linkedin: { type: String },
-      youtube: { type: String },
-      twitter: { type: String },
-      instagram: { type: String },
-      tiktok: { type: String },
-      pinterest: { type: String },
-      whatsapp: { type: String },
-    },
+    facebook: { type: String },
+    linkedin: { type: String },
+    youtube: { type: String },
+    twitter: { type: String },
+    instagram: { type: String },
+    tiktok: { type: String },
+    pinterest: { type: String },
+    whatsapp: { type: String },
   },
   { timestamps: true }
 );

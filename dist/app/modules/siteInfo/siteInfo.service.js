@@ -13,35 +13,55 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SiteInfoServices = void 0;
-const http_status_codes_1 = __importDefault(require("http-status-codes"));
 const appError_1 = __importDefault(require("../../errorHelpers/appError"));
 const siteInfo_model_1 = require("./siteInfo.model");
 const getSiteInfo = () => __awaiter(void 0, void 0, void 0, function* () {
     const siteInfo = yield siteInfo_model_1.SiteInfo.findOne();
     return siteInfo;
 });
+// const createSiteInfo = async (payload: ISiteInfo): Promise<ISiteInfo> => {
+//     const existing = await SiteInfo.findOne();
+//     if (existing) {
+//         throw new AppError(httpStatus.CONFLICT, "Site info already exists. Use update instead.");
+//     }
+//     const newSiteInfo = await SiteInfo.create(payload);
+//     return newSiteInfo;
+// };
+// const updateSiteInfo = async (payload: ISiteInfo): Promise<ISiteInfo> => {
+//     const existing = await SiteInfo.findOne();
+//     if (!existing) {
+//         throw new AppError(httpStatus.NOT_FOUND, "No site info found. Use create first.");
+//     }
+//     const updated = await SiteInfo.findByIdAndUpdate(
+//         existing._id,
+//         payload,
+//         { new: true, runValidators: true } // return the updated document
+//     );
+//     if (!updated) {
+//         throw new AppError(httpStatus.INTERNAL_SERVER_ERROR, "Failed to update site info.");
+//     }
+//     return updated;
+// };
+// Create SiteInfo
 const createSiteInfo = (payload) => __awaiter(void 0, void 0, void 0, function* () {
+    // Optional: check if a SiteInfo already exists (singleton)
     const existing = yield siteInfo_model_1.SiteInfo.findOne();
     if (existing) {
-        throw new appError_1.default(http_status_codes_1.default.CONFLICT, "Site info already exists. Use update instead.");
+        throw new appError_1.default(400, "Site information already exists. You can only update it.");
     }
-    const newSiteInfo = yield siteInfo_model_1.SiteInfo.create(payload);
-    return newSiteInfo;
+    const siteInfo = yield siteInfo_model_1.SiteInfo.create(payload);
+    return siteInfo;
 });
+// Update SiteInfo
 const updateSiteInfo = (payload) => __awaiter(void 0, void 0, void 0, function* () {
-    const existing = yield siteInfo_model_1.SiteInfo.findOne();
-    if (!existing) {
-        throw new appError_1.default(http_status_codes_1.default.NOT_FOUND, "No site info found. Use create first.");
+    const updatedSiteInfo = yield siteInfo_model_1.SiteInfo.findOneAndUpdate({}, payload, { new: true, runValidators: true });
+    if (!updatedSiteInfo) {
+        throw new appError_1.default(404, "Site information not found");
     }
-    const updated = yield siteInfo_model_1.SiteInfo.findByIdAndUpdate(existing._id, payload, { new: true, runValidators: true } // return the updated document
-    );
-    if (!updated) {
-        throw new appError_1.default(http_status_codes_1.default.INTERNAL_SERVER_ERROR, "Failed to update site info.");
-    }
-    return updated;
+    return updatedSiteInfo;
 });
 exports.SiteInfoServices = {
     getSiteInfo,
     createSiteInfo,
-    updateSiteInfo,
+    updateSiteInfo
 };

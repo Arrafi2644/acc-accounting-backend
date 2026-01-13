@@ -1,105 +1,102 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateServiceZodSchema = exports.createServiceZodSchema = exports.createServiceTypeZodSchema = void 0;
-const mongoose_1 = require("mongoose");
+exports.updateServiceZodSchema = exports.createServiceZodSchema = void 0;
 const zod_1 = require("zod");
-// Service-type schema
-exports.createServiceTypeZodSchema = zod_1.z.object({
-    name: zod_1.z
-        .string({ invalid_type_error: "Service type must be string" })
-        .min(2, { message: "Service type must be at least 2 characters long." })
-        .max(50, { message: "Service type cannot exceed 50 characters." }),
-    description: zod_1.z
-        .string({ invalid_type_error: "Service type description must be string" })
-        .min(2, { message: "Service type description must be at least 2 characters long." })
-        .max(80, { message: "Service type description cannot exceed 80 characters." })
+/* ================= Banner ================= */
+const bannerZodSchema = zod_1.z.object({
+    title: zod_1.z.string().min(2),
+    subtitle: zod_1.z.string().min(2),
 });
-// Sub-service schema
-const subServiceZodSchema = zod_1.z.object({
-    title: zod_1.z
-        .string({ required_error: "Sub-service title is required" })
-        .min(2, "Title must be at least 2 characters long").optional(),
-    description: zod_1.z
-        .string({ required_error: "Sub-service description is required" })
-        .min(5, "Description must be at least 5 characters long").optional(),
-    image: zod_1.z
-        .array(zod_1.z.string().url("Each image must be a valid URL"))
-        .nonempty("At least one image is required").optional(),
+/* ================= Service Overview ================= */
+const serviceOverviewZodSchema = zod_1.z.object({
+    title: zod_1.z.string().min(2),
+    description: zod_1.z.string().min(5),
+    features: zod_1.z.array(zod_1.z.string()).optional(),
+    serviceImage: zod_1.z.string().url("Service image must be a valid URL"),
 });
-// Main service schema
-exports.createServiceZodSchema = zod_1.z.object({
-    title: zod_1.z
-        .string({ required_error: "Service title is required" })
-        .min(2, "Title must be at least 2 characters long"),
-    slug: zod_1.z
-        .string({ required_error: "Service slug is required" })
-        .min(2, "Slug must be at least 2 characters long")
-        .regex(/^[a-z0-9-]+$/, "Slug must contain only lowercase letters, numbers, and hyphens")
-        .optional(),
-    description: zod_1.z
-        .string()
-        .optional(),
-    images: zod_1.z
-        .array(zod_1.z.string().url("Image must be a valid URL"))
-        .optional(),
-    included: zod_1.z
-        .array(zod_1.z.string())
-        .optional(),
-    excluded: zod_1.z
-        .array(zod_1.z.string())
-        .optional(),
-    amenities: zod_1.z
-        .array(zod_1.z.string())
-        .optional(),
-    servicePlan: zod_1.z
-        .array(zod_1.z.string())
-        .optional(),
-    subServices: zod_1.z
-        .array(subServiceZodSchema)
-        .optional(),
-    serviceType: zod_1.z
-        .string({ required_error: "Service type ID is required" })
-        .refine((val) => mongoose_1.Types.ObjectId.isValid(val), {
-        message: "Invalid serviceType ObjectId",
+/* ================= Feature ================= */
+const featureZodSchema = zod_1.z.object({
+    title: zod_1.z.string().min(2),
+    description: zod_1.z.string().min(5),
+    icon: zod_1.z.string(),
+});
+/* ================= Service Matter ================= */
+const serviceMatterZodSchema = zod_1.z.object({
+    matterSectionTitle: zod_1.z.string().min(2),
+    matterSectionSubTitle: zod_1.z.string().min(2),
+    withoutSaaS: zod_1.z.object({
+        badgeTitle: zod_1.z.string().min(2),
+        badgeIcon: zod_1.z.string(),
+        title: zod_1.z.string().min(2),
+        items: zod_1.z
+            .array(zod_1.z.object({
+            icon: zod_1.z.string(),
+            text: zod_1.z.string().min(2),
+        }))
+            .nonempty(),
+    }),
+    withSaaS: zod_1.z.object({
+        badgeTitle: zod_1.z.string().min(2),
+        badgeIcon: zod_1.z.string(),
+        title: zod_1.z.string().min(2),
+        items: zod_1.z
+            .array(zod_1.z.object({
+            icon: zod_1.z.string(),
+            text: zod_1.z.string().min(2),
+        }))
+            .nonempty(),
     }),
 });
-// Sub-service schema for update
-const updateSubServiceZodSchema = zod_1.z.object({
-    title: zod_1.z
-        .string()
-        .min(2, "Title must be at least 2 characters long")
-        .optional(),
-    description: zod_1.z
-        .string()
-        .min(5, "Description must be at least 5 characters long")
-        .optional(),
-    image: zod_1.z
-        .array(zod_1.z.string().url("Each image must be a valid URL"))
-        .optional(),
+/* ================= Process Step ================= */
+const processStepZodSchema = zod_1.z.object({
+    stepNumber: zod_1.z.number().min(1),
+    title: zod_1.z.string().min(2),
+    description: zod_1.z.string().min(5),
+    icon: zod_1.z.string(),
 });
-// Main update service schema
-exports.updateServiceZodSchema = zod_1.z.object({
-    title: zod_1.z
-        .string()
-        .min(2, "Title must be at least 2 characters long")
-        .optional(),
+/* ================= Requirement Doc ================= */
+const requirementDocZodSchema = zod_1.z.object({
+    title: zod_1.z.string().min(2),
+    icon: zod_1.z.string(),
+});
+/* ================= FAQ ================= */
+const faqZodSchema = zod_1.z.object({
+    question: zod_1.z.string().min(2),
+    answer: zod_1.z.string().min(5),
+});
+/* ================= CREATE SERVICE ================= */
+exports.createServiceZodSchema = zod_1.z.object({
+    title: zod_1.z.string().min(2),
     slug: zod_1.z
         .string()
-        .min(2, "Slug must be at least 2 characters long")
-        .regex(/^[a-z0-9-]+$/, "Slug must contain only lowercase letters, numbers, and hyphens")
+        .regex(/^[a-z0-9-]+$/, "Slug must contain lowercase letters, numbers and hyphens")
         .optional(),
-    description: zod_1.z.string().optional(),
-    images: zod_1.z.array(zod_1.z.string().url("Image must be a valid URL")).optional(),
-    included: zod_1.z.array(zod_1.z.string()).optional(),
-    excluded: zod_1.z.array(zod_1.z.string()).optional(),
-    amenities: zod_1.z.array(zod_1.z.string()).optional(),
-    servicePlan: zod_1.z.array(zod_1.z.string()).optional(),
-    subServices: zod_1.z.array(updateSubServiceZodSchema).optional(),
-    serviceType: zod_1.z
+    serviceSummary: zod_1.z.string().min(5),
+    shortDescription: zod_1.z.string().min(5),
+    serviceIcon: zod_1.z.string(),
+    banner: bannerZodSchema,
+    overView: serviceOverviewZodSchema,
+    serviceMatter: serviceMatterZodSchema,
+    features: zod_1.z.array(featureZodSchema).nonempty(),
+    processSteps: zod_1.z.array(processStepZodSchema).nonempty(),
+    requirementDocs: zod_1.z.array(requirementDocZodSchema).nonempty(),
+    faqs: zod_1.z.array(faqZodSchema).nonempty(),
+});
+/* ================= UPDATE SERVICE ================= */
+exports.updateServiceZodSchema = zod_1.z.object({
+    title: zod_1.z.string().min(2).optional(),
+    slug: zod_1.z
         .string()
-        .refine((val) => (val ? mongoose_1.Types.ObjectId.isValid(val) : true), {
-        message: "Invalid serviceType ObjectId",
-    })
+        .regex(/^[a-z0-9-]+$/)
         .optional(),
-    deleteImages: zod_1.z.array(zod_1.z.string()).optional()
+    serviceSummary: zod_1.z.string().optional(),
+    shortDescription: zod_1.z.string().optional(),
+    serviceIcon: zod_1.z.string().optional(),
+    banner: bannerZodSchema.optional(),
+    overView: serviceOverviewZodSchema.optional(),
+    serviceMatter: serviceMatterZodSchema.optional(),
+    features: zod_1.z.array(featureZodSchema).optional(),
+    processSteps: zod_1.z.array(processStepZodSchema).optional(),
+    requirementDocs: zod_1.z.array(requirementDocZodSchema).optional(),
+    faqs: zod_1.z.array(faqZodSchema).optional(),
 });

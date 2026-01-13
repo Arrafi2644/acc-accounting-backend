@@ -1,11 +1,13 @@
+
 export interface ITestimonialForm {
-  fullName: string;         
-  email: string;             
-  companyName?: string;      
-  designation?: string;   
-  rating: number;           
-  message: string;          
-  photoUrl?: string;       
-  date?: string;             
-  isApproved?: boolean;      
+  partnershipLabel: string;
+  rating: number;
+  content: string;
+  clientName: string;
+  designation?: string;
+  companyName: string;
+  location: string;
+  industry: string;
+  isApproved?: boolean;
+  isFeatured?: boolean;
 }
